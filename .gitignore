@@ -12,7 +12,7 @@ __pycache__/
 # Archivos de configuración de IDE y editores
 .codegpt
 *.log
-chunks_d.txt
+#chunks_d.txt
 
 # Ignorar toda la carpeta data
 #data/
