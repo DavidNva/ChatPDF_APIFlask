@@ -1,0 +1,47 @@
+# openai==0.28.1
+# langchain==0.0.324
+# faiss-cpu==1.7.4 
+# streamlit==1.28.0
+# PyPDF2==3.0.1
+# #sentence-transformers==2.2.2
+# sentence-transformers
+# torch
+# transformers
+# python-dotenv==1.0.0
+# logging-config==1.0.0
+# tiktoken==0.4.0              # Paquete faltante detectado
+
+# openai==0.28.1
+# langchain==0.0.324
+# faiss-cpu==1.7.4
+# streamlit==1.28.0
+# PyPDF2==3.0.1
+# sentence-transformers==2.2.2
+# #pip install sentence-transformers
+
+
+# openai==0.28.1
+# langchain==0.0.324
+# faiss-cpu==1.7.4
+# streamlit==1.28.0
+# PyPDF2==3.0.1
+# sentence-transformers
+# torch==2.0.1
+# transformers==4.34.0
+# python-dotenv==1.0.0
+# tiktoken==0.4.0
+
+
+# requirements_iis.txt
+wfastcgi==3.0.0
+openai==0.28.1
+langchain==0.0.324
+faiss-cpu==1.7.4
+PyPDF2==3.0.1
+sentence-transformers
+torch==2.0.1
+transformers==4.34.0
+python-dotenv==1.0.0
+tiktoken==0.4.0
+Flask==2.0.1
+Werkzeug==2.0.1
