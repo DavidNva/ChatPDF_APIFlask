@@ -11,14 +11,11 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from typing import List, Dict
 from langchain.callbacks import get_openai_callback
+import sys
 
-# Configuración de logging para IIS
-log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
-
+# Configuración de logging para Render.com
 logging.basicConfig(
-    filename=os.path.join(log_dir, f'qa_log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'),
+    stream=sys.stdout,  # Cambio para Render.com
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -217,11 +214,18 @@ def initialize():
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({
-        "status": "OK",
-        "message": "API is running",
-        "version": "1.0"
-    })
+    try:
+        return jsonify({
+            "status": "OK",
+            "message": "API is running",
+            "version": "1.0"
+        })
+    except Exception as e:
+        logging.error(f"Error en health check: {str(e)}")
+        return jsonify({
+            "status": "ERROR",
+            "message": str(e)
+        }), 500
 
 @app.route('/consulta', methods=['POST'])
 def process_query():
@@ -245,4 +249,5 @@ def process_query():
         }), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
