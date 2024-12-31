@@ -45,3 +45,4 @@ python-dotenv==1.0.0
 tiktoken==0.4.0
 Flask==2.0.1
 Werkzeug==2.0.1
+gunicorn==20.1.0
