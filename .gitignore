@@ -1,0 +1,19 @@
+# Ignorar el entorno virtual
+.env/
+env/
+venv/
+.venv/
+
+# Archivos generados por Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Archivos de configuración de IDE y editores
+.codegpt
+*.log
+chunks_d.txt
+
+# Ignorar toda la carpeta data
+data/
+
