@@ -15,5 +15,5 @@ __pycache__/
 chunks_d.txt
 
 # Ignorar toda la carpeta data
-data/
+#data/
 
