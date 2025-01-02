@@ -69,7 +69,7 @@ class QASystem:
             
             # Crear embeddings
             embeddings = HuggingFaceEmbeddings(
-                model_name="sentence-transformers/all-MiniLM-L6-v2"
+                 model_name="distilroberta-base"
             )
             
             self.knowledge_base = FAISS.from_texts(self.chunks, embeddings)
