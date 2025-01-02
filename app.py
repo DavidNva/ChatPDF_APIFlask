@@ -1,10 +1,7 @@
-# Agregamos esto al inicio del archivo, antes de cualquier otra importación
-from gevent import monkey
-monkey.patch_all()
-
 from flask import Flask, request, jsonify
 import os
 import logging
+import sys
 import re
 import tiktoken
 from datetime import datetime
@@ -15,11 +12,10 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from typing import List, Dict
 from langchain.callbacks import get_openai_callback
-import sys
 
-# Configuración de logging para Render.com
+# Configuración de logging para Cloud Run
 logging.basicConfig(
-    stream=sys.stdout,  # Cambio para Render.com
+    stream=sys.stdout,
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -253,5 +249,5 @@ def process_query():
         }), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
