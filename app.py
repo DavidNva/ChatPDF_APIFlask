@@ -208,9 +208,15 @@ def init_qa_system():
             logging.error(f"Error inicializando QA system: {str(e)}")
             raise
 
-@app.before_first_request
-def initialize():
-    init_qa_system()
+# @app.before_first_request
+# def initialize():
+#     init_qa_system()
+@app.before_request
+def initialize_qa_system():
+    global qa_system
+    if qa_system is None:
+        logging.info("Inicializando sistema QA antes de la primera solicitud")
+        init_qa_system()
 
 @app.route('/health', methods=['GET'])
 def health_check():
