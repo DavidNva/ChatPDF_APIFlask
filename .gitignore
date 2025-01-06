@@ -16,3 +16,4 @@ __pycache__/
 
 # Ignorar toda la carpeta data
 #data/
+.codegpt
