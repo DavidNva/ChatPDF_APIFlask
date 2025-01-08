@@ -1021,9 +1021,7 @@ Tema: Artículo 7o.-
 CONTENIDO:
 Artículo 7o.- El contribuyente que reciba la devolución de bienes enajenados, otorgue descuentos o bonificaciones o devuelva los anticipos o  los depósitos recibidos, con motivo de la realización de actividades gravadas por esta Ley, deducirá en la siguiente o siguientes declaraciones de pago del mes de calendario que corresponda, el monto de dichos conceptos del valor de los actos o actividades por los que deba pagar el impuesto, siempre que expresamente se haga constar que el impuesto al valor agregado que se hubiere trasladado se restituyó.
 Párrafo reformado DOF 30-12-2002
-
 La restitución del impuesto correspondiente deberá hacerse constar en un documento que contenga en forma expresa y por separado la contraprestación y el impuesto al valor agregado trasladado que se hubiesen restituido, así como los datos de identificación del comprobante fiscal de la operación original. Párrafo adicionado DOF 11-12-2013
-
 El contribuyente que devuelva los bienes que le hubieran sido enajenados, reciba descuentos o bonificaciones, así como los anticipos o depósitos que hubiera entregado, disminuirá el impuesto restituido del monto del impuesto acreditable en el mes en que se dé cualquiera de los supuestos mencionados; cuando el monto del impuesto acreditable resulte inferior al monto del impuesto que se restituya, el contribuyente pagará la diferencia entre dichos montos al presentar la declaración de pago que corresponda al mes en que reciba el descuento o la bonificación, efectúe la devolución de bienes o reciba los anticipos o depósitos que hubiera entregado. Párrafo reformado DOF 31-12-1999, 30-12-2002, 01-12-2004
 
 Lo dispuesto en este artículo no será aplicable cuando por los actos que sean objeto de la devolución, descuento o bonificación, se hubiere efectuado la retención y entero en los términos de los artículos 1o.A, 3o., tercer párrafo o 18-J, fracción II, inciso a) de esta Ley. En este supuesto los contribuyentes deberán presentar declaración complementaria para cancelar los efectos de la operación respectiva, sin que las declaraciones complementarias presentadas exclusivamente por este concepto se computen dentro del límite establecido en el artículo 32 del Código Fiscal de la Federación. Párrafo adicionado DOF 31-12-1998. Reformado DOF 11-12-2013, 09-12-2019
@@ -1074,7 +1072,7 @@ Página: 20 de 128
 Capítulo: II - De la enajenación
 Artículo: 9
 Articulo: 9o.-, 9o., 9o, 9, 9no
-Tema: Artículo 9o.-
+Tema: Artículo 9o.- Puntos I, II, III, IV, V, VI
 
 CONTENIDO:
 Artículo 9o.- No se pagará el impuesto en la enajenación de los siguientes bienes:
@@ -1090,7 +1088,18 @@ IV.- Bienes muebles usados, a excepción de los enajenados por empresas.
 V.- Billetes y demás comprobantes que permitan participar en loterías, rifas, sorteos o juegos con apuestas y concursos de toda clase, así como los premios respectivos, a que se refiere la Ley del Impuesto sobre la Renta.
 
 VI.- Moneda nacional y moneda extranjera, así como las piezas de oro o de plata que hubieran tenido tal carácter y las piezas denominadas onza troy.
+Tokens:
+==================================================
+==================================================
+Chunk 51
+METADATA:
+Página: 20 de 128
+Capítulo: II - De la enajenación
+Artículo: 9
+Articulo: 9o.-, 9o., 9o, 9, 9no
+Tema: Artículo 9o.-Continuacion de puntos del articulo 9o.-: VII, VIII, IX y X 
 
+CONTENIDO:
 VII.- Partes sociales, documentos pendientes de cobro y títulos de crédito, con excepción de certificados de depósito de bienes cuando por la enajenación de dichos bienes se esté obligado a pagar este impuesto y de certificados de participación inmobiliaria no amortizables u otros títulos que otorguen a su titular derechos sobre inmuebles distintos a casa habitación o suelo. En la enajenación de documentos pendientes de cobro, no queda comprendida la enajenación del bien que ampare el documento.
 Tampoco se pagará el impuesto en la enajenación de los certificados de participación inmobiliarios no amortizables, cuando se encuentren inscritos en el Registro Nacional de Valores e Intermediarios y su enajenación se realice en bolsa de valores concesionada en los términos de la Ley del Mercado de Valores o en mercados reconocidos de acuerdo a tratados internacionales que México tenga en vigor.
 Párrafo adicionado DOF 23-12-2005
@@ -1104,10 +1113,32 @@ IX.La de bienes efectuada entre residentes en el extranjero, siempre que los bie
 
 X. La de bienes que realicen las personas morales autorizadas para recibir donativos deducibles para los efectos del impuesto sobre la renta.
 Fracción adicionada DOF 09-12-2019 Reforma DOF 11-12-2013: Derogó del artículo el entonces último párrafo (antes adicionado por DOF 30-12-2002) Artículo reformado DOF 30-12-1980
+Tokens:
+==================================================
+==================================================
+Chunk 52
+METADATA:
+Página: 21 de 128
+Capítulo: II - De la enajenación
+Artículo: 10
+Articulo: 10.-, 10., decimo, 10o
+Tema: Artículo 10.-.
 
-Artículo 10.- Para los efectos de esta Ley, se entiende que la enajenación se efectúa en territorio nacional, si en él se encuentra el bien al efectuarse el envío al adquirente y cuando, no habiendo envío, en el país se realiza la entrega material del bien por el enajenante. La enajenación de bienes sujetos a matrícula o registros mexicanos, se considerará realizada en territorio nacional aún cuando al llevarse a cabo se encuentren materialmente fuera de dicho territorio y siempre que el enajenante sea residente en México o establecimiento en el país de residentes en el extranjero. Párrafo reformado DOF 26-12-1990
+CONTENIDO:
+Artículo 10.- Para los efectos de esta Ley, se entiende que la enajenación se efectúa en territorio nacional, si en él se encuentra el bien al efectuarse el envío al adquirente y cuando, no habiendo envío, en el país se realiza la entrega material del bien por el enajenante. La enajenación de bienes sujetos a matrícula o registros mexicanos, se considerará realizada en territorio nacional aún cuando al llevarse a cabo se encuentren materialmente fuera de dicho territorio y siempre que el enajenante sea residente en México o establecimiento en el país de residentes en el extranjero. Párrafo reformado DOF 26-12-1990 
 Tratándose de bienes intangiles, se considera que la enajenación se realiza en territorio nacional cuando el adquirente y el enajenante residan en el mismo.
+Tokens:
+==================================================
+==================================================
+Chunk 53
+METADATA:
+Página: 21 de 128
+Capítulo: II - De la enajenación
+Artículo: 11
+Articulo: 11.-, 11., decimo primero, 11vo
+Tema: Artículo 11.-
 
+CONTENIDO:
 Artículo 11.- Se considera que se efectúa la enajenación de los bienes en el momento en el que
 efectivamente se cobren las contraprestaciones y sobre el monto de cada una de ellas.
 Tratándose de la enajenación de títulos que incorporen derechos reales a la entrega y disposición de
@@ -1123,114 +1154,101 @@ que se haga la entrega del bien donado o se extienda el comprobante que transfie
 ocurra primero.
 Párrafo adicionado DOF 11-12-2013
 Artículo reformado DOF 30-12-2002
+Tokens:
+==================================================
+==================================================
+Chunk 54
+METADATA:
+Página: 21 de 128
+Capítulo: II - De la enajenación
+Artículo: 12
+Articulo: 12.-, 12., decimo segundo, 12vo
+Tema: Artículo 12.-
 
-Artículo 12.- Para calcular el impuesto tratándose de enajenaciones se considerará como valor el
-precio o la contraprestación pactados, así como las cantidades que además se carguen o cobren al
-adquirente por otros impuestos, derechos, intereses normales o moratorios, penas convencionales o
-cualquier otro concepto.
+CONTENIDO:
+Artículo 12.- Para calcular el impuesto tratándose de enajenaciones se considerará como valor el precio o la contraprestación pactados, así como las cantidades que además se carguen o cobren al adquirente por otros impuestos, derechos, intereses normales o moratorios, penas convencionales o cualquier otro concepto.
 Artículo reformado DOF 31-12-1979, 30-12-2002
+Tokens:
+==================================================
+==================================================
+Chunk 55
+METADATA:
+Página: 21 de 128
+Capítulo: II - De la enajenación
+Artículo: 13
+Articulo: 13.-, 13., decimo tercero
+Tema: Artículo 13.-
 
+CONTENIDO:
 Artículo 13.- (Se deroga).
 Artículo reformado DOF 31-12-1979. Derogado 30-12-1980. Adicionado 13-12-1996. Derogado DOF 31-12-1998
 
-21 de 128
-
-LEY DEL IMPUESTO AL VALOR AGREGADO
 CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
+Tokens:
+==================================================
+==================================================
+Chunk 56
+METADATA:
+Página: 22 de 128
+Capítulo: III - De la prestación de servicios
+Artículo: 14
+Articulo: 14.-, 14., decimo cuarto, 14vo. 
+Tema: Artículo 14.- Puntos I, II, III, IV, V, VI
 
-
-
-
-
-
+CONTENIDO:
 CAPITULO III
 De la prestación de servicios
 Artículo 14.- Para los efectos de esta Ley se considera prestación de servicios independientes:
-I.-
-
-La prestación de obligaciones de hacer que realice una persona a favor de otra, cualquiera que
-sea el acto que le dé origen y el nombre o clasificación que a dicho acto le den otras leyes.
-
-II.-
-
-El transporte de personas o bienes.
-
-III.-
-
-El seguro, el afianzamiento y el reafianzamiento.
+I.- La prestación de obligaciones de hacer que realice una persona a favor de otra, cualquiera que sea el acto que le dé origen y el nombre o clasificación que a dicho acto le den otras leyes.
+II.- El transporte de personas o bienes.
+III.- El seguro, el afianzamiento y el reafianzamiento.
 Fracción reformada DOF 28-12-1994
+IV.-El mandato, la comisión, la mediación, la agencia, la representación, la correduría, la consignación y la distribución.
+V.- La asistencia técnica y la transferencia de tecnología.
+VI.- Toda otra obligación de dar, de no hacer o de permitir, asumida por una persona en beneficio de otra, siempre que no esté considerada por esta Ley como enajenación o uso o goce temporal de bienes.
 
-IV.-
-
-El mandato, la comisión, la mediación, la agencia, la representación, la correduría, la
-consignación y la distribución.
-
-V.-
-
-La asistencia técnica y la transferencia de tecnología.
-
-VI.-
-
-Toda otra obligación de dar, de no hacer o de permitir, asumida por una persona en beneficio de
-otra, siempre que no esté considerada por esta Ley como enajenación o uso o goce temporal de
-bienes.
-
-No se considera prestación de servicios independientes la que se realiza de manera subordinada
-mediante el pago de una remuneración, ni los servicios por los que se perciban ingresos que la Ley del
-Impuesto sobre la Renta asimile a dicha remuneración.
-Se entenderá que la prestación de servicios independientes tiene la característica de personal, cuando
-se trate de las actividades señaladas en este artículo que no tengan la naturaleza de actividad
-empresarial.
+No se considera prestación de servicios independientes la que se realiza de manera subordinada mediante el pago de una remuneración, ni los servicios por los que se perciban ingresos que la Ley del Impuesto sobre la Renta asimile a dicha remuneración.
+Se entenderá que la prestación de servicios independientes tiene la característica de personal, cuando se trate de las actividades señaladas en este artículo que no tengan la naturaleza de actividad empresarial.
 Párrafo adicionado DOF 30-12-1983
+Tokens:
+==================================================
+==================================================
+Chunk 57
+METADATA:
+Página: 22 de 128
+Capítulo: III - De la prestación de servicios
+Artículo: 15
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- puntos I, II, III y IV
 
+CONTENIDO: 
 Artículo 15.- No se pagará el impuesto por la prestación de los siguientes servicios:
-I.-
-
-Las comisiones y otras contraprestaciones que cubra el acreditado a su acreedor con motivo del
-otorgamiento de créditos hipotecarios para la adquisición, ampliación, construcción o reparación
-de bienes inmuebles destinados a casa habitación, salvo aquéllas que se originen con
-posterioridad a la autorización del citado crédito o que se deban pagar a terceros por el
-acreditado.
+I.- Las comisiones y otras contraprestaciones que cubra el acreditado a su acreedor con motivo del otorgamiento de créditos hipotecarios para la adquisición, ampliación, construcción o reparación de bienes inmuebles destinados a casa habitación, salvo aquéllas que se originen con posterioridad a la autorización del citado crédito o que se deban pagar a terceros por el acreditado.
 Fracción derogada DOF 31-12-1982. Adicionada DOF 28-12-1994
 
-II.-
-
-Las comisiones que cobren las administradoras de fondos para el retiro o, en su caso, las
-instituciones de crédito, a los trabajadores por la administración de sus recursos provenientes de
-los sistemas de ahorro para el retiro y por los servicios relacionados con dicha administración, a
-que se refieren la Ley de los Sistemas de Ahorro para el Retiro y la Ley del Instituto de Seguridad
-y Servicios Sociales de los Trabajadores del Estado, así como las demás disposiciones derivadas
-de éstas.
+II.- Las comisiones que cobren las administradoras de fondos para el retiro o, en su caso, las instituciones de crédito, a los trabajadores por la administración de sus recursos provenientes de los sistemas de ahorro para el retiro y por los servicios relacionados con dicha administración, a que se refieren la Ley de los Sistemas de Ahorro para el Retiro y la Ley del Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado, así como las demás disposiciones derivadas de éstas.
 Fracción derogada DOF 31-12-1982. Adicionada DOF 15-05-1997
 
-III.- Los prestados en forma gratuita, excepto cuando los beneficiarios sean los miembros, socios o
-asociados de la persona moral que preste el servicio.
+III.- Los prestados en forma gratuita, excepto cuando los beneficiarios sean los miembros, socios o asociados de la persona moral que preste el servicio.
 Fracción reformada DOF 30-12-1980
 
-IV.- Los de enseñanza que preste la Federación, el Distrito Federal, los Estados, los Municipios y sus
-organismos descentralizados, y los establecimientos de particulares que tengan autorización o
-
-22 de 128
-
-LEY DEL IMPUESTO AL VALOR AGREGADO
-CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
-
-
-
-
-
-
-reconocimiento de validez oficial de estudios, en los términos de la Ley General de Educación,
-así como los servicios educativos de nivel preescolar.
+IV.- Los de enseñanza que preste la Federación, el Distrito Federal, los Estados, los Municipios y sus organismos descentralizados, y los establecimientos de particulares que tengan autorización o reconocimiento de validez oficial de estudios, en los términos de la Ley General de Educación, así como los servicios educativos de nivel preescolar.
 Fracción reformada DOF 28-12-1994
 
-V.
+Tokens:
+==================================================
+==================================================
+Chunk 58
+METADATA:
+Página: 23 de 128
+Capítulo: III - De la prestación de servicios
+Artículo: 15
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- puntos V, VI, VII y VIII, IX
 
-El transporte público terrestre de personas que se preste exclusivamente en áreas urbanas,
-suburbanas o en zonas metropolitanas. No se considera transporte público aquél que se contrata
-mediante plataformas de servicios digitales de intermediación entre terceros que sean oferentes
-de servicios de transporte y los demandantes de los mismos, cuando los vehículos con los que se
-proporcione el servicio sean de uso particular.
+CONTENIDO: 
+CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
+V. El transporte público terrestre de personas que se preste exclusivamente en áreas urbanas, suburbanas o en zonas metropolitanas. No se considera transporte público aquél que se contrata mediante plataformas de servicios digitales de intermediación entre terceros que sean oferente de servicios de transporte y los demandantes de los mismos, cuando los vehículos con los que se proporcione el servicio sean de uso particular.
 Fracción reformada DOF 30-12-1980, 26-12-1990, 11-12-2013, 09-12-2019
 
 VI.- El transporte marítimo internacional de bienes prestado por personas residentes en el extranjero
@@ -1245,142 +1263,90 @@ Fracción derogada DOF 30-12-1980. Adicionada DOF 09-12-2019
 VIII.- (Se deroga).
 Fracción derogada DOF 30-12-1980
 
-IX.- El aseguramiento contra riesgos agropecuarios, los seguros de crédito a la vivienda que cubran
-el riesgo de incumplimiento de los deudores de créditos hipotecarios o con garantía fiduciaria
-para la adquisición, ampliación, construcción o reparación de bienes inmuebles, destinados a
-casa habitación, los seguros de garantía financiera que cubran el pago por incumplimiento de los
-emisores de valores, títulos de crédito o documentos que sean objeto de oferta pública o de
-intermediación en mercados de valores, siempre que los recursos provenientes de la colocación
-de dichos valores, títulos de crédito o documentos, se utilicen para el financiamiento de créditos
-hipotecarios o con garantía fiduciaria para la adquisición, ampliación, construcción o reparación
-de bienes inmuebles destinados a casa habitación y los seguros de vida ya sea que cubran el
-riesgo de muerte u otorguen rentas vitalicias o pensiones, así como las comisiones de agentes
-que correspondan a los seguros citados.
+IX.- El aseguramiento contra riesgos agropecuarios, los seguros de crédito a la vivienda que cubran el riesgo de incumplimiento de los deudores de créditos hipotecarios o con garantía fiduciaria para la adquisición, ampliación, construcción o reparación de bienes inmuebles, destinados a casa habitación, los seguros de garantía financiera que cubran el pago por incumplimiento de los emisores de valores, títulos de crédito o documentos que sean objeto de oferta pública o de intermediación en mercados de valores, siempre que los recursos provenientes de la colocación de dichos valores, títulos de crédito o documentos, se utilicen para el financiamiento de créditos hipotecarios o con garantía fiduciaria para la adquisición, ampliación, construcción o reparación de bienes inmuebles destinados a casa habitación y los seguros de vida ya sea que cubran el riesgo de muerte u otorguen rentas vitalicias o pensiones, así como las comisiones de agentes que correspondan a los seguros citados.
 Fracción reformada DOF 28-12-1994, 22-06-2006
+Tokens: 
+==================================================
+==================================================
+Chunk 59 
+METADATA: 
+Página: 23 de 128 
+Capítulo: III - De la prestación de servicios
+Artículo: 15.
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- punto X, incisos a) y b)
 
+CONTENIDO: 
 X.- Por los que deriven intereses que:
 Párrafo reformado DOF 21-11-1991
 
-a)
+a) Deriven de operaciones en las que el enajenante, el prestador del servicio o quien conceda el uso o goce temporal de bienes, proporcione financiamiento relacionado con actos o actividades por los que no se esté obligado al pago de este impuesto o a los que se les aplique la tasa del 0%.
+b) Reciban o paguen las instituciones de crédito, las uniones de crédito, las sociedades financieras de objeto limitado, las sociedades de ahorro y préstamo y las empresas de factoraje financiero, en operaciones de financiamiento, para las que requieran de autorización y por concepto de descuento en documentos pendientes de cobro; los que reciban y paguen las sociedades financieras de objeto múltiple que para los efectos del impuesto sobre la renta formen parte del sistema financiero, por el otorgamiento de crédito, de factoraje financiero o descuento en documentos pendientes de cobro; los que reciban los almacenes generales de depósito por créditos otorgados que hayan sido garantizados con bonos de prenda; los que reciban o paguen las sociedades cooperativas de ahorro y préstamo a que hace referencia la Ley para Regular las Actividades de las Sociedades
 
-Deriven de operaciones en las que el enajenante, el prestador del servicio o quien conceda
-el uso o goce temporal de bienes, proporcione financiamiento relacionado con actos o
-actividades por los que no se esté obligado al pago de este impuesto o a los que se les
-aplique la tasa del 0%.
-
-b)
-
-Reciban o paguen las instituciones de crédito, las uniones de crédito, las sociedades
-financieras de objeto limitado, las sociedades de ahorro y préstamo y las empresas de
-factoraje financiero, en operaciones de financiamiento, para las que requieran de
-autorización y por concepto de descuento en documentos pendientes de cobro; los que
-reciban y paguen las sociedades financieras de objeto múltiple que para los efectos del
-impuesto sobre la renta formen parte del sistema financiero, por el otorgamiento de crédito,
-de factoraje financiero o descuento en documentos pendientes de cobro; los que reciban los
-almacenes generales de depósito por créditos otorgados que hayan sido garantizados con
-bonos de prenda; los que reciban o paguen las sociedades cooperativas de ahorro y
-préstamo a que hace referencia la Ley para Regular las Actividades de las Sociedades
-
-23 de 128
-
-LEY DEL IMPUESTO AL VALOR AGREGADO
 CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
 
-
-
-
-
-
-Cooperativas de Ahorro y Préstamo, así como las sociedades financieras populares, las
-sociedades financieras comunitarias y los organismos de integración financiera rural, a que
-hace referencia la Ley de Ahorro y Crédito Popular, a sus socios o clientes, según se trate, y
-que cumplan con los requisitos para operar como tales de conformidad con los citados
-ordenamientos; los que reciban o paguen en operaciones de financiamiento, los organismos
-descentralizados de la Administración Pública Federal y los fideicomisos de fomento
-económico del Gobierno Federal, que estén sujetos a la supervisión de la Comisión Nacional
-Bancaria y de Valores; así como las comisiones de los agentes y corresponsales de las
-instituciones de crédito por dichas operaciones.
+Cooperativas de Ahorro y Préstamo, así como las sociedades financieras populares, las sociedades financieras comunitarias y los organismos de integración financiera rural, a que hace referencia la Ley de Ahorro y Crédito Popular, a sus socios o clientes, según se trate, y que cumplan con los requisitos para operar como tales de conformidad con los citados ordenamientos; los que reciban o paguen en operaciones de financiamiento, los organismos descentralizados de la Administración Pública Federal y los fideicomisos de fomento económico del Gobierno Federal, que estén sujetos a la supervisión de la Comisión Nacional Bancaria y de Valores; así como las comisiones de los agentes y corresponsales de lasinstituciones de crédito por dichas operaciones.
 Párrafo reformado DOF 28-12-1994, 29-12-1997, 18-07-2006, 11-12-2013
 
-No será aplicable lo dispuesto en el párrafo anterior, tratándose de créditos otorgados a
-personas físicas que no desarrollen actividades empresariales, o no presten servicios
-personales independientes, o no otorguen el uso o goce temporal de bienes inmuebles.
-Tratándose de créditos otorgados a personas físicas que realicen las actividades
-mencionadas, no se pagará el impuesto cuando los mismos sean para la adquisición de
-bienes de inversión en dichas actividades o se trate de créditos refaccionarios, de
-habilitación o avío, siempre que dichas personas se encuentren inscritas en el Registro
-Federal de Contribuyentes.
+No será aplicable lo dispuesto en el párrafo anterior, tratándose de créditos otorgados a personas físicas que no desarrollen actividades empresariales, o no presten servicios personales independientes, o no otorguen el uso o goce temporal de bienes inmuebles.
+Tratándose de créditos otorgados a personas físicas que realicen las actividades mencionadas, no se pagará el impuesto cuando los mismos sean para la adquisición de bienes de inversión en dichas actividades o se trate de créditos refaccionarios, de habilitación o avío, siempre que dichas personas se encuentren inscritas en el Registro Federal de Contribuyentes.
 Párrafo adicionado DOF 21-11-1991. Reformado 28-12-1994, 07-12-2009, 11-12-2013
 
-Tampoco será aplicable la exención prevista en el primer párrafo de este inciso tratándose
-de créditos otorgados a través de tarjetas de crédito.
+Tampoco será aplicable la exención prevista en el primer párrafo de este inciso tratándose de créditos otorgados a través de tarjetas de crédito.
 Párrafo adicionado DOF 21-11-1991
 Inciso reformado DOF 26-12-1990
+Tokens: 
+==================================================
+==================================================
+Chunk 60
+METADATA: 
+Página: 23 de 128 
+Capítulo: III - De la prestación de servicios
+Artículo: 15.
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- punto X, incisos c) y d),e),f),g),h), i)
 
-c)
-
-Reciban las instituciones de fianzas, las de seguros y las sociedades mutualistas de
-seguros, en operaciones de financiamiento, excepto tratándose de créditos otorgados a
-personas físicas que no gozarían de la exención prevista en el inciso anterior.
+CONTENIDO: 
+c) Reciban las instituciones de fianzas, las de seguros y las sociedades mutualistas de seguros, en operaciones de financiamiento, excepto tratándose de créditos otorgados a personas físicas que no gozarían de la exención prevista en el inciso anterior.
 Inciso reformado DOF 21-11-1991
 
-d)
-
-Provengan de créditos hipotecarios o con garantía fiduciaria para la adquisición, ampliación,
-construcción o reparación de bienes inmuebles destinados a casa habitación.
+d) Provengan de créditos hipotecarios o con garantía fiduciaria para la adquisición, ampliación, construcción o reparación de bienes inmuebles destinados a casa habitación.
 Inciso reformado DOF 21-11-1991, 28-12-1994, 29-12-1997
 
-e)
-
-Provengan de cajas de ahorro de los trabajadores, y de fondos de ahorro establecido por las
-empresas siempre que reúna los requisitos de deducibilidad en los términos de la Ley del
+e) Provengan de cajas de ahorro de los trabajadores, y de fondos de ahorro establecido por las empresas siempre que reúna los requisitos de deducibilidad en los términos de la Ley del
 Impuesto sobre la Renta.
 
-f)
+f) Deriven de obligaciones emitidas conforme a lo dispuesto en la Ley General de Títulos y Operaciones de Crédito.
 
-Deriven de obligaciones emitidas conforme a lo dispuesto en la Ley General de Títulos y
-Operaciones de Crédito.
-
-g)
-
-Reciban o paguen las instituciones públicas que emitan bonos y administren planes de
-ahorro con la garantía incondicional de pago del Gobierno Federal, conforme a la Ley.
+g) Reciban o paguen las instituciones públicas que emitan bonos y administren planes de ahorro con la garantía incondicional de pago del Gobierno Federal, conforme a la Ley.
 Inciso adicionado DOF 31-12-1987
 
-h)
-
-Deriven de valores a cargo del Gobierno Federal e inscritos en el Registro Nacional de
-Valores e Intermediarios.
+h) Deriven de valores a cargo del Gobierno Federal e inscritos en el Registro Nacional de Valores e Intermediarios.
 Inciso adicionado DOF 31-12-1988. Reformado DOF 28-12-1989, 30-12-2002
 
-i)
-
-Deriven de títulos de crédito que sean de los que se consideran como colocados entre el
-gran público inversionista, conforme a las reglas generales que al efecto expida la Secretaría
-de Hacienda y Crédito Público o de operaciones de préstamo de títulos, valores y otros
-
-24 de 128
-
-LEY DEL IMPUESTO AL VALOR AGREGADO
-CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
-
-
-
-
-
-
-bienes fungibles a que se refiere la fracción III del artículo 14-A del Código Fiscal de la
-Federación.
+i) Deriven de títulos de crédito que sean de los que se consideran como colocados entre el gran público inversionista, conforme a las reglas generales que al efecto expida la Secretaría de Hacienda y Crédito Público o de operaciones de préstamo de títulos, valores y otros bienes fungibles a que se refiere la fracción III del artículo 14-A del Código Fiscal de la Federación.
 Inciso adicionado DOF 28-12-1989. Reformado DOF 26-12-1990, 29-12-1993
 Fracción reformada DOF 30-12-1980
 
+CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
+
+Tokens: 
+==================================================
+==================================================
+Chunk 61
+METADATA: 
+Página: 24 de 128 
+Capítulo: III - De la prestación de servicios
+Artículo: 15.
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- punto XI y XII
+
+CONTENIDO: 
 XI.- Por los que se deriven de operaciones financieras derivadas a que se refiere el artículo 16-A del
 Código Fiscal de la Federación.
 Fracción reformada DOF 30-12-1980. Derogada 26-12-1990. Adicionada 29-12-1993
 
-XII.- Los proporcionados a sus miembros como contraprestación normal por sus cuotas y siempre que
-los servicios que presten sean únicamente los relativos a los fines que les sean propios,
-tratándose de:
+XII.- Los proporcionados a sus miembros como contraprestación normal por sus cuotas y siempre que los servicios que presten sean únicamente los relativos a los fines que les sean propios, tratándose de:
 a).- Partidos, asociaciones, coaliciones y frentes políticos legalmente reconocidos.
 b).- Sindicatos obreros y organismos que los agrupen.
 c).- Cámaras de comercio e industria, agrupaciones agrícolas, ganaderas, pesqueras o
@@ -1393,76 +1359,68 @@ culturales, a excepción de aquéllas que proporcionen servicios con instalacion
 cuando el valor de éstas representen más del 25% del total de las instalaciones.
 Inciso reformado DOF 31-12-1982
 
-XIII.- Los de espectáculos públicos por el boleto de entrada, salvo los de teatro y circo, cuando el
-convenio con el Estado o Acuerdo con el Departamento del Distrito Federal, donde se presente el
-espectáculo no se ajuste a lo previsto en la fracción VI del artículo 41 de esta Ley. La exención
-prevista en esta fracción no será aplicable a las funciones de cine, por el boleto de entrada.
+Tokens: 
+==================================================
+==================================================
+Chunk 62
+METADATA: 
+Página: 23 de 128 
+Capítulo: III - De la prestación de servicios
+Artículo: 15.
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- punto XIII, XIV y IV
+
+CONTENIDO: 
+XIII.- Los de espectáculos públicos por el boleto de entrada, salvo los de teatro y circo, cuando el convenio con el Estado o Acuerdo con el Departamento del Distrito Federal, donde se presente el espectáculo no se ajuste a lo previsto en la fracción VI del artículo 41 de esta Ley. La exención prevista en esta fracción no será aplicable a las funciones de cine, por el boleto de entrada.
 Párrafo reformado DOF 31-12-1998
 
-No se consideran espectáculos públicos los prestados en restaurantes, bares, cabarets, salones
-de fiesta o de baile y centros nocturnos.
+No se consideran espectáculos públicos los prestados en restaurantes, bares, cabarets, salones de fiesta o de baile y centros nocturnos.
 Fracción reformada DOF 21-11-1991
 
-XIV. Los servicios profesionales de medicina, cuando su prestación requiera título de médico
-conforme a las leyes, siempre que sean prestados por personas físicas, ya sea individualmente o
-por conducto de sociedades civiles o instituciones de asistencia o beneficencia privada
-autorizadas por las leyes de la materia.
+XIV. Los servicios profesionales de medicina, cuando su prestación requiera título de médico conforme a las leyes, siempre que sean prestados por personas físicas, ya sea individualmente o por conducto de sociedades civiles o instituciones de asistencia o beneficencia privada autorizadas por las leyes de la materia.
 Fracción reformada DOF 31-12-1982, 08-12-2020
 
-XV.- Los servicios profesionales de medicina, hospitalarios, de radiología, de laboratorios y estudios
-clínicos, que presten los organismos descentralizados de la Administración Pública Federal o del
-Distrito Federal, o de los gobiernos estatales o municipales.
+XV.- Los servicios profesionales de medicina, hospitalarios, de radiología, de laboratorios y estudios clínicos, que presten los organismos descentralizados de la Administración Pública Federal o del Distrito Federal, o de los gobiernos estatales o municipales.
 Fracción derogada DOF 31-12-1982. Adicionada DOF 15-12-1995
+Tokens: 
+==================================================
+==================================================
+Chunk 63
+METADATA: 
+Página: 23 de 128
+Capítulo: III - De la prestación de servicios
+Artículo: 15.
+Articulo: 15.-, 15., decimo quinto, 15vo, quinceavo
+Tema: Artículo 15.- punto IV
 
+CONTENIDO: 
 XVI.- Por los que obtengan contraprestaciones los autores en los casos siguientes:
-a)
+a) Por autorizar a terceros la publicación de obras escritas de su creación en periódicos y revistas, siempre que los periódicos y revistas se destinen para su enajenación al público por la persona que efectúa los pagos por estos conceptos.
 
-Por autorizar a terceros la publicación de obras escritas de su creación en periódicos y
-revistas, siempre que los periódicos y revistas se destinen para su enajenación al público
-por la persona que efectúa los pagos por estos conceptos.
-
-25 de 128
-
-LEY DEL IMPUESTO AL VALOR AGREGADO
 CÁMARA DE DIPUTADOS DEL H. CONGRESO DE LA UNIÓN
 
+b) Por transmitir temporalmente los derechos patrimoniales u otorgar temporalmente licencias de uso a terceros, correspondientes a obras de su autoría a que se refieren las fracciones I a VII, IX, X, XII, XIII y XIV del artículo 13 y el artículo 78 de la Ley Federal del Derecho de Autor, que estén inscritas en el Registro Público del Derecho de Autor de la Secretaría de Educación Pública.
 
+c) Lo dispuesto en los incisos anteriores no aplicará:
+1. Cuando se trate de ideas o frases publicitarias, logotipos, emblemas, sellos distintivos, diseños o modelos industriales, manuales operativos u obras de arte aplicado.
 
-
-
-
-b)
-
-Por transmitir temporalmente los derechos patrimoniales u otorgar temporalmente licencias
-de uso a terceros, correspondientes a obras de su autoría a que se refieren las fracciones I a
-VII, IX, X, XII, XIII y XIV del artículo 13 y el artículo 78 de la Ley Federal del Derecho de
-Autor, que estén inscritas en el Registro Público del Derecho de Autor de la Secretaría de
-Educación Pública.
-
-c)
-
-Lo dispuesto en los incisos anteriores no aplicará:
-1.
-
-Cuando se trate de ideas o frases publicitarias, logotipos, emblemas, sellos distintivos,
-diseños o modelos industriales, manuales operativos u obras de arte aplicado.
-
-2.
-
-Cuando las contraprestaciones deriven de la explotación de las obras escritas o
-musicales en actividades empresariales distintas a la enajenación al público de sus
-obras o en la prestación de servicios.
+2.Cuando las contraprestaciones deriven de la explotación de las obras escritas o musicales en actividades empresariales distintas a la enajenación al público de sus obras o en la prestación de servicios.
 Fracción reformada DOF 28-12-1989, 26-12-1990, 03-12-1993, 30-12-2002
+Tokens: 
+==================================================
+==================================================
+Chunk 63
+METADATA: 
+Página: 25 de 128 
+Capítulo: III - De la prestación de servicios
+Artículo: 16.
+Articulo: 16.-, 16., decimo sixto, dieciséis
+Tema: Artículo 16.
 
-Artículo 16.- Para los efectos de esta Ley, se entiende que se presta el servicio en territorio nacional
-cuando en el mismo se lleva a cabo, total o parcialmente, por un residente en el país.
-En el caso de transporte internacional, se considera que el servicio se presta en territorio nacional
-independientemente de la residencia del porteador, cuando en el mismo se inicie el viaje, incluso si éste
-es de ida y vuelta.
-Tratándose de transportación aérea internacional, se considera que únicamente se presta el 25% del
-servicio en territorio nacional. La transportación aérea a las poblaciones mexicanas ubicadas en la franja
-fronteriza de 20 kilómetros paralela a las líneas divisorias internacionales del norte y sur del país, gozará
-del mismo tratamiento.
+CONTENIDO: 
+Artículo 16.- Para los efectos de esta Ley, se entiende que se presta el servicio en territorio nacional cuando en el mismo se lleva a cabo, total o parcialmente, por un residente en el país.
+En el caso de transporte internacional, se considera que el servicio se presta en territorio nacional independientemente de la residencia del porteador, cuando en el mismo se inicie el viaje, incluso si éste es de ida y vuelta.
+Tratándose de transportación aérea internacional, se considera que únicamente se presta el 25% del servicio en territorio nacional. La transportación aérea a las poblaciones mexicanas ubicadas en la franja fronteriza de 20 kilómetros paralela a las líneas divisorias internacionales del norte y sur del país, gozará del mismo tratamiento.
 Párrafo reformado DOF 30-12-1996
 
 Tratándose de los servicios digitales a que se refiere el artículo 18-B de esta Ley, prestados por
