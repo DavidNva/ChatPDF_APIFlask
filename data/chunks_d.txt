@@ -514,7 +514,7 @@ METADATA:
 Página: 9 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5
+Artículo:  5o.-
 Articulo: 5o.-,5o,5to, 5, 5o de la pagina 9, etc.
 
 Tema: Artículo 5o.- Punto I
@@ -534,7 +534,7 @@ METADATA:
 Página: 10 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 - Punto II
+Artículo:  5o.- - Punto II
 Articulo: 5o.-,5o,5to, 5, 5o punto II.
 
 Tema: Artículo 5o.- Punto II
@@ -557,7 +557,7 @@ METADATA:
 Página: 10 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 - Punto III y IV
+Artículo: 5o.- - Punto III y IV
 Articulo: 5o.-,5o,5to, 5, 5o punto III, 5o punto IV.
 
 Tema: Artículo 5o.- Punto III y IV
@@ -573,7 +573,7 @@ METADATA:
 Página: 10 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 Punto V
+Artículo: 5o.- Punto V
 Articulo: 5o.-,5o,5to, 5, 5o punto V, 5o punto V, con inscisos derivados a y b
 
 Tema: Artículo 5o.- punto V (Primera parte) - Con sus incisos derivados a y v
@@ -592,7 +592,7 @@ METADATA:
 Página: 11 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto V
+Artículo: 5o.- punto V
 Articulo: 5o.-,5o,5to, 5, 5o punto V, 5o inciso c), con inciso derivados c)
 
 Tema: Artículo 5o.- punto V (Segunda parte) - Con sus incisos derivados c)
@@ -608,7 +608,7 @@ METADATA:
 Página: 11 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto V
+Artículo: 5o.- punto V
 Articulo: 5o.-,5o,5to, 5, 5o punto V, 5o inciso d), con inciso derivados: d) puntos 1 y 2
 
 Tema: Artículo 5o.- punto V (Tercera parte) - Con sus incisos derivados: d) puntos 1 y 2
@@ -628,7 +628,7 @@ METADATA:
 Página: 11 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto V
+Artículo: 5o.- punto V
 Articulo: 5o.-,5o,5to, 5, 5o punto V, 5o inciso d), con inciso derivados: d) puntos 3 y 4
 
 Tema: Artículo 5o.- punto V (Cuarta parte) - Con sus incisos derivados: d) puntos 3 y 4
@@ -651,7 +651,7 @@ Chunk 28
 METADATA:
 Página: 12 de 128
 Capítulo: I - Disposiciones Generales
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI con inciso derivados: a)
 
 Tema: Artículo 5o.- punto VI (Primera Parte)- Con sus incisos derivados: a)
@@ -670,7 +670,7 @@ METADATA:
 Página: 12 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI con inciso derivados: b)
 
 Tema: Artículo 5o.- punto VI (Segunda Parte)- Con sus incisos derivados: b) con su numeracion derivadas 1,2,3 y 4
@@ -694,7 +694,7 @@ METADATA:
 Página: 13 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI 
 
 Tema: Artículo 5o.- punto VI (Cuarta Parte)- Mas informacion sobre el punto VI del articulo 5o.
@@ -714,7 +714,7 @@ METADATA:
 Página: 13 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI 
 
 Tema: Artículo 5o.- punto VI (Quinta Parte)- Mas informacion sobre el punto VI del articulo 5o.
@@ -733,7 +733,7 @@ METADATA:
 Página: 13 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI 
 
 Tema: Artículo 5o.- punto VI (Sexta Parte)- Mas informacion sobre el punto VI del articulo 5o.
@@ -752,7 +752,7 @@ METADATA:
 Página: 14 de 128
 Capítulo: I - Disposiciones Generales
 
-Artículo: 5 punto VI
+Artículo: 5o.- punto VI
 Articulo: 5o.-,5o,5to, 5, 5o VI, 5o - VI., 5 - VI 
 
 Tema: Artículo 5o.- punto VI (Septima Parte)- Mas informacion sobre el punto VI del articulo 5o.
