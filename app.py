@@ -125,7 +125,7 @@ class QASystem:
             - Menciona la ubicación exacta dentro del documento (capítulo, sección, numero de pagin)
             - Indica si es parte de alguna reforma (si se menciona en los metadatos)
             
-            3. ANÁLISIS (solo si toda la información anterior está disponible):
+            3. ANALISIS (solo si toda la información anterior está disponible):
             - Explica el contenido citado
             - Menciona cualquier referencia cruzada a otros artículos (solo si aparecen en los chunks proporcionados)
             - Proporciona ejemplos prácticos o interpretaciones legales cuando sea aplicable.
