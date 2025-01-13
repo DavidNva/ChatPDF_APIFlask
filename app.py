@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import os
 import logging
 import sys
@@ -71,51 +71,71 @@ class QASystem:
             logging.error(f"Error en initialize_system: {str(e)}")
             raise
 
-    def process_question(self, question: str, api_key: str):
+    def process_question(self, question: str, api_key: str, previous_context=None):
         try:
             logging.info(f"Procesando pregunta: {question}")
             os.environ["OPENAI_API_KEY"] = api_key
 
-            docs = self.knowledge_base.similarity_search(question, k=8)
+            # Si hay un contexto previo, incorpóralo a la pregunta
+            if previous_context:
+                question = f"Basándote en esta información previa: {previous_context}\nPregunta: {question}"
+
+            # Búsqueda amplia para identificar todos los chunks relevantes
+            keyword_search_terms = ["exentas", "exención", "actividades no gravadas", "sin IVA"]
+            expanded_docs = []
+
+            for term in keyword_search_terms:
+                expanded_docs.extend(self.knowledge_base.similarity_search(term, k=5))
+
+            # Eliminar duplicados
+            unique_docs = {doc.page_content: doc for doc in expanded_docs}.values()
 
             total_tokens = 0
             filtered_docs = []
 
-            for doc in docs:
+            for doc in unique_docs:
                 tokens = self.processor.count_tokens(doc.page_content)
                 if total_tokens + tokens < 14000:
                     total_tokens += tokens
                     filtered_docs.append(doc)
 
+            # Modificar el prompt para manejar múltiples artículos
             prompt_template = """
             Eres un asistente especializado en la Ley del Impuesto al Valor Agregado (IVA).
 
             INSTRUCCIONES:
-            1. Proporciona respuestas detalladas basándote únicamente en los chunks proporcionados.
-            2. Siempre cita textualmente el contenido relevante con sus metadatos (página, capítulo, artículo).
-            3. Si la información no está disponible, responde: "No encuentro información específica sobre esto en los fragmentos proporcionados del documento."
+            1. Identifica todos los artículos relacionados con la pregunta y enuméralos con sus citas textuales completas.
+            2. Incluye el contexto legal de cada artículo: página, capítulo, y tema.
+            3. Proporciona un análisis consolidado, explicando cómo los artículos están relacionados con la pregunta.
+            4. Si no encuentras información suficiente, responde: "No encuentro información específica sobre esto en los fragmentos proporcionados del documento."
 
             ESTRUCTURA DE RESPUESTA:
 
             1. CITA TEXTUAL:
-            - Proporciona la cita textual del contenido relevante.
-            - Incluye metadatos: Página, Capítulo, Artículo y Tema si están disponibles.
+            - Artículo X:
+              [Cita textual del artículo X]
+            - Artículo Y:
+              [Cita textual del artículo Y]
+            (Repite para cada artículo relevante)
 
-            2. CONTEXTO LEGAL Documento:
-            - Describe dónde se encuentra esta información en el documento.
+            2. CONTEXTO LEGAL:
+            - Artículo X: Página, Capítulo, Tema.
+            - Artículo Y: Página, Capítulo, Tema.
+            (Repite para cada artículo relevante)
 
             3. ANÁLISIS:
-            - Explica el contenido citado en contexto legal.
-            - Menciona cualquier referencia cruzada relevante.
+            - Explica cómo los artículos citados se relacionan con la pregunta.
+            - Incluye referencias cruzadas relevantes.
 
             Contexto: {context}
 
             Pregunta: {question}
 
-            Respuesta detallada: """
+            Respuesta detallada:
+            """
 
             PROMPT = PromptTemplate(
-                template=prompt_template, 
+                template=prompt_template,
                 input_variables=["context", "question"]
             )
 
@@ -126,14 +146,16 @@ class QASystem:
             )
 
             chain = load_qa_chain(
-                llm, 
+                llm,
                 chain_type="stuff",
                 prompt=PROMPT
             )
 
+            # Generar respuesta
             with get_openai_callback() as cb:
                 respuesta = chain.run(input_documents=filtered_docs, question=question)
 
+                # Preparar contexto utilizado
                 context_used = [
                     {
                         "content": doc.page_content,
@@ -157,6 +179,7 @@ class QASystem:
             raise
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 CHUNKS_FILE_PATH = os.path.join('data', 'chunks_d.txt')
 qa_system = None
 
@@ -204,7 +227,15 @@ def process_query():
                 "error": "Se requiere 'pregunta' y 'api_key' en el cuerpo de la solicitud"
             }), 400
 
-        result = qa_system.process_question(data['pregunta'], data['api_key'])
+        # Recuperar el contexto previo si existe
+        previous_context = session.get('previous_context', None)
+
+        # Procesar la pregunta
+        result = qa_system.process_question(data['pregunta'], data['api_key'], previous_context)
+
+        # Guardar el contexto para la próxima interacción
+        session['previous_context'] = result['respuesta']
+
         return jsonify(result)
 
     except Exception as e:
