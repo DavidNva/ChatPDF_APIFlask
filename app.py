@@ -80,52 +80,48 @@ class QASystem:
             if previous_context:
                 question = f"Basándote en esta información previa: {previous_context}\nPregunta: {question}"
 
-            # Búsqueda amplia para identificar todos los chunks relevantes
-            keyword_search_terms = ["exentas", "exención", "actividades no gravadas", "sin IVA"]
-            expanded_docs = []
-
-            for term in keyword_search_terms:
-                expanded_docs.extend(self.knowledge_base.similarity_search(term, k=5))
-
-            # Eliminar duplicados
-            unique_docs = {doc.page_content: doc for doc in expanded_docs}.values()
+            # Búsqueda de chunks relevantes
+            docs = self.knowledge_base.similarity_search(question, k=8)
 
             total_tokens = 0
             filtered_docs = []
 
-            for doc in unique_docs:
+            for doc in docs:
                 tokens = self.processor.count_tokens(doc.page_content)
                 if total_tokens + tokens < 14000:
                     total_tokens += tokens
                     filtered_docs.append(doc)
 
-            # Modificar el prompt para manejar múltiples artículos
+            # Determinar si hay citas textuales relevantes
+            if not filtered_docs:
+                return {
+                    "respuesta": "No encuentro información específica sobre esto en los fragmentos proporcionados del documento.",
+                    "metricas": {
+                        "tokens_totales": 0,
+                        "costo_estimado": 0,
+                        "chunks_relevantes": 0
+                    },
+                    "contexto_usado": []
+                }
+
             prompt_template = """
             Eres un asistente especializado en la Ley del Impuesto al Valor Agregado (IVA).
 
             INSTRUCCIONES:
-            1. Identifica todos los artículos relacionados con la pregunta y enuméralos con sus citas textuales completas.
-            2. Incluye el contexto legal de cada artículo: página, capítulo, y tema.
-            3. Proporciona un análisis consolidado, explicando cómo los artículos están relacionados con la pregunta.
-            4. Si no encuentras información suficiente, responde: "No encuentro información específica sobre esto en los fragmentos proporcionados del documento."
+            1. Si encuentras información relevante en los chunks, proporciona:
+               - Cita textual: Incluye las citas textuales completas con los metadatos (página, capítulo, artículo).
+               - Contexto legal: Indica dónde se encuentra la información en el documento.
+               - Análisis: Explica cómo los artículos citados se relacionan con la pregunta.
+            2. Si NO encuentras una cita textual directa pero puedes inferir información útil, responde únicamente con el contexto legal y análisis.
+            3. Si no puedes encontrar información ni inferir nada relevante, responde: "No encuentro información específica sobre esto en los fragmentos proporcionados del documento."
 
             ESTRUCTURA DE RESPUESTA:
-
             1. CITA TEXTUAL:
-            - Artículo X:
-              [Cita textual del artículo X]
-            - Artículo Y:
-              [Cita textual del artículo Y]
-            (Repite para cada artículo relevante)
-
+               [Incluye solo si hay citas relevantes.]
             2. CONTEXTO LEGAL:
-            - Artículo X: Página, Capítulo, Tema.
-            - Artículo Y: Página, Capítulo, Tema.
-            (Repite para cada artículo relevante)
-
+               [Siempre menciona los metadatos relevantes.]
             3. ANÁLISIS:
-            - Explica cómo los artículos citados se relacionan con la pregunta.
-            - Incluye referencias cruzadas relevantes.
+               [Siempre proporciona un análisis claro y detallado.]
 
             Contexto: {context}
 
