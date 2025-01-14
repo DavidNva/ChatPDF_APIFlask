@@ -1,18 +1,19 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import os
 import logging
 import sys
 import re
 import json
 import tiktoken
-from datetime import datetime
+from datetime import datetime, timedelta
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from langchain.callbacks import get_openai_callback
+from flask_session import Session
 
 # Configuración de logging
 logging.basicConfig(
@@ -22,10 +23,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Configuración de la aplicación Flask
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+Session(app)
+
 class DocumentProcessor:
     def __init__(self):
         self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125")
-    
+
     def count_tokens(self, text: str) -> int:
         return len(self.encoding.encode(text))
 
@@ -57,10 +65,26 @@ class DocumentProcessor:
                         metadata['tema'] = match.group(1).strip()
         return metadata
 
+class IntentClassifier:
+    def __init__(self):
+        self.intents = {
+            "saludo": ["hola", "buenos días", "buenas tardes", "qué tal"],
+            "despedida": ["adiós", "hasta luego", "nos vemos"],
+            "general": ["qué es", "explica", "definición"],
+            "articulo": ["artículo", "art", "art-", "1a", "1-b"]
+        }
+
+    def classify(self, question: str) -> str:
+        question = question.lower()
+        for intent, keywords in self.intents.items():
+            if any(keyword in question for keyword in keywords):
+                return intent
+        return "desconocido"
 
 class QASystem:
     def __init__(self, chunks_file_path: str):
         self.processor = DocumentProcessor()
+        self.classifier = IntentClassifier()
         self.knowledge_base = None
         self.chunks = []
         self.initialize_system(chunks_file_path)
@@ -70,10 +94,10 @@ class QASystem:
             logger.info("Iniciando procesamiento del archivo de texto")
             with open(chunks_file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-            
+
             chunks = content.split("=====")
             self.chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
-            
+
             embeddings = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
                 model_kwargs={'device': 'cpu'}
@@ -85,9 +109,17 @@ class QASystem:
 
     def process_question(self, question: str, api_key: str) -> Dict:
         try:
+            question_type = self.classifier.classify(question)
+
+            if question_type == "saludo":
+                return {"respuesta": "Hola, ¿en qué puedo ayudarte hoy?"}
+
+            if question_type == "despedida":
+                return {"respuesta": "Adiós, ¡que tengas un excelente día!"}
+
             docs = self.knowledge_base.similarity_search(question, k=8)
             context = "\n".join([doc.page_content for doc in docs])
-            
+
             prompt_template = """
             ESTRUCTURA DE RESPUESTA:
             1. CITA TEXTUAL:
@@ -104,24 +136,24 @@ class QASystem:
             Contexto: {context}
             Respuesta detallada:
             """
-            
+
             PROMPT = PromptTemplate(
                 template=prompt_template,
                 input_variables=["context", "question"]
             )
-            
+
             llm = ChatOpenAI(
                 temperature=0.3,
                 model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
                 openai_api_key=api_key
             )
-            
+
             chain = load_qa_chain(
                 llm,
                 chain_type="stuff",
                 prompt=PROMPT
             )
-            
+
             with get_openai_callback() as cb:
                 response = chain.run(input_documents=docs, question=question)
                 context_used = [
@@ -144,8 +176,7 @@ class QASystem:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
 
-
-app = Flask(__name__)
+# Inicialización del sistema
 qa_system = None
 
 def init_qa_system():
