@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 
 class DocumentProcessor:
     def __init__(self):
-        self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        #self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125:iva-finetuned-pdf-128")
     
     def count_tokens(self, text: str) -> int:
         return len(self.encoding.encode(text))
@@ -166,14 +167,60 @@ class QASystem:
             docs = self.knowledge_base.similarity_search(question, k=8)
             context = "\n".join([doc.page_content for doc in docs])
             
-            prompt = f"""
+            prompt_template = """
+            ESTRUCTURA DE RESPUESTA:
+            1. CITA TEXTUAL:
+            - Proporciona la cita textual completa del artículo o sección relevante
+            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema)
+            - Si solicitan más detalle, agrega información sobre los incisos o puntos del artículo.
+            2. CONTEXTO LEGAL:
+            - Menciona la ubicación exacta dentro del documento (capítulo, sección, número de página).
+            - Indica si es parte de alguna reforma (si se menciona en los metadatos).
+            3. ANÁLISIS:
+            - Explica el contenido citado.
+            - Menciona referencias cruzadas a otros artículos (si aparecen en los chunks proporcionados).
+            - Proporciona ejemplos prácticos o interpretaciones legales cuando sea aplicable.
             Pregunta: {question}
             Contexto: {context}
-            Genera una respuesta basada en el contexto proporcionado.
+            Respuesta detallada:
             """
             
-            response = conversation_manager.llm.predict(prompt)
-            return {"respuesta": response, "tipo": "legal"}
+            PROMPT = PromptTemplate(
+                template=prompt_template,
+                input_variables=["context", "question"]
+            )
+            
+            llm = ChatOpenAI(
+                temperature=0.3,
+                #model_name="gpt-3.5-turbo",
+                model_name="gpt-3.5-turbo-0125:iva-finetuned-pdf-128",
+                openai_api_key=api_key
+            )
+            
+            chain = load_qa_chain(
+                llm,
+                chain_type="stuff",
+                prompt=PROMPT
+            )
+            
+            with get_openai_callback() as cb:
+                response = chain.run(input_documents=docs, question=question)
+                context_used = [
+                    {
+                        "content": doc.page_content,
+                        "metadata": self.processor.extract_metadata(doc.page_content),
+                        "tokens": self.processor.count_tokens(doc.page_content)
+                    } for doc in docs
+                ]
+                return {
+                    "respuesta": response,
+                    "metricas": {
+                        "tokens_totales": cb.total_tokens,
+                        "costo_estimado": cb.total_cost,
+                        "chunks_relevantes": len(docs)
+                    },
+                    "contexto_usado": context_used
+                }
         except Exception as e:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
