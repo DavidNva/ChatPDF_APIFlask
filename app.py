@@ -11,9 +11,7 @@ from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
-from typing import List, Dict, Optional
+from typing import List, Dict
 from langchain.callbacks import get_openai_callback
 
 # Configuración de logging
@@ -26,12 +24,11 @@ logger = logging.getLogger(__name__)
 
 class DocumentProcessor:
     def __init__(self):
-        #self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
-        self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125:iva-finetuned-pdf-128")
+        self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125")
     
     def count_tokens(self, text: str) -> int:
         return len(self.encoding.encode(text))
-    
+
     def extract_metadata(self, chunk: str) -> Dict:
         metadata = {
             'pagina': None,
@@ -39,7 +36,6 @@ class DocumentProcessor:
             'articulo': None,
             'tema': None
         }
-        
         lines = chunk.split('\n')
         for line in lines:
             if 'METADATA:' in line:
@@ -59,74 +55,8 @@ class DocumentProcessor:
                     match = re.search(r'Tema: (.+)', line)
                     if match:
                         metadata['tema'] = match.group(1).strip()
-                    
         return metadata
 
-class ConversationManager:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-        self.memory = ConversationBufferMemory(
-            memory_key="history",
-            return_messages=True
-        )
-        self.llm = ChatOpenAI(
-            temperature=0.7,
-            model_name="gpt-3.5-turbo",
-            openai_api_key=api_key
-        )
-        self.conversation = ConversationChain(
-            llm=self.llm,
-            memory=self.memory,
-            verbose=True
-        )
-    
-    def detect_intent(self, text: str) -> Dict[str, any]:
-        intent_prompt = f"""
-        Analiza el siguiente mensaje y determina:
-        1. La intención principal del usuario (saludo, despedida, pregunta legal, consulta general, etc)
-        2. Si hace referencia a conversación previa
-        3. El tema principal si es una consulta
-        
-        Mensaje: {text}
-        
-        Responde en formato JSON con las siguientes keys:
-        - intent_type: tipo de intención
-        - references_history: true/false
-        - main_topic: tema principal o null
-        """
-        
-        response = self.llm.predict(intent_prompt)
-        try:
-            return json.loads(response)
-        except Exception as e:
-            logger.error(f"Error parsing intent response: {str(e)}")
-            return {
-                "intent_type": "unknown",
-                "references_history": False,
-                "main_topic": None
-            }
-
-    def get_conversational_response(self, text: str, intent: Dict[str, any]) -> Optional[Dict]:
-        if intent["intent_type"] in ["saludo", "despedida", "agradecimiento"]:
-            response_prompt = f"""
-            Genera una respuesta profesional para un asistente especializado.
-            Mensaje del usuario: {text}
-            Tipo de intención: {intent["intent_type"]}
-            """
-            
-            response = self.llm.predict(response_prompt)
-            return {
-                "respuesta": response,
-                "tipo": "conversacional",
-                "intent": intent
-            }
-        return None
-
-    def add_to_history(self, user_message: str, assistant_response: str):
-        self.memory.save_context(
-            {"input": user_message},
-            {"output": assistant_response}
-        )
 
 class QASystem:
     def __init__(self, chunks_file_path: str):
@@ -138,7 +68,6 @@ class QASystem:
     def initialize_system(self, chunks_file_path: str):
         try:
             logger.info("Iniciando procesamiento del archivo de texto")
-            
             with open(chunks_file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
             
@@ -149,7 +78,6 @@ class QASystem:
                 model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
                 model_kwargs={'device': 'cpu'}
             )
-            
             self.knowledge_base = FAISS.from_texts(self.chunks, embeddings)
             logger.info(f"Sistema inicializado con {len(self.chunks)} chunks")
         except Exception as e:
@@ -157,22 +85,14 @@ class QASystem:
 
     def process_question(self, question: str, api_key: str) -> Dict:
         try:
-            conversation_manager = ConversationManager(api_key)
-            intent = conversation_manager.detect_intent(question)
-            conv_response = conversation_manager.get_conversational_response(question, intent)
-            
-            if conv_response:
-                return conv_response
-
             docs = self.knowledge_base.similarity_search(question, k=8)
             context = "\n".join([doc.page_content for doc in docs])
             
             prompt_template = """
             ESTRUCTURA DE RESPUESTA:
             1. CITA TEXTUAL:
-            - Proporciona la cita textual completa del artículo o sección relevante
-            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema)
-            - Si solicitan más detalle, agrega información sobre los incisos o puntos del artículo.
+            - Proporciona la cita textual completa del artículo o sección relevante.
+            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema).
             2. CONTEXTO LEGAL:
             - Menciona la ubicación exacta dentro del documento (capítulo, sección, número de página).
             - Indica si es parte de alguna reforma (si se menciona en los metadatos).
@@ -192,8 +112,7 @@ class QASystem:
             
             llm = ChatOpenAI(
                 temperature=0.3,
-                #model_name="gpt-3.5-turbo",
-                model_name="gpt-3.5-turbo-0125:iva-finetuned-pdf-128",
+                model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
                 openai_api_key=api_key
             )
             
@@ -224,6 +143,7 @@ class QASystem:
         except Exception as e:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
+
 
 app = Flask(__name__)
 qa_system = None
