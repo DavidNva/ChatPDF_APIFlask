@@ -11,11 +11,11 @@ from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
-from typing import List, Dict, Tuple
+from langchain.memory import ConversationBufferMemory
+from typing import List, Dict, Optional, Tuple
 from langchain.callbacks import get_openai_callback
 from flask_session import Session
 
-# Configuración de logging
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.INFO,
@@ -23,27 +23,22 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Configuración de la aplicación Flask
-app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
-Session(app)
-
 class DocumentProcessor:
     def __init__(self):
         self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125")
-
+    
     def count_tokens(self, text: str) -> int:
         return len(self.encoding.encode(text))
-
+    
     def extract_metadata(self, chunk: str) -> Dict:
         metadata = {
             'pagina': None,
             'capitulo': None,
-            'articulo': None,
-            'tema': None
+            'articulo': [],
+            'tema': None,
+            'es_continuacion': False
         }
+        
         lines = chunk.split('\n')
         for line in lines:
             if 'METADATA:' in line:
@@ -56,35 +51,117 @@ class DocumentProcessor:
                     if match:
                         metadata['capitulo'] = match.group(1).strip()
                 if 'Artículo:' in line:
-                    match = re.search(r'Artículo: ([^,]+)', line)
-                    if match:
-                        metadata['articulo'] = match.group(1).strip()
+                    matches = re.findall(r'[\w\.-]+', line[line.find('Artículo:'):])
+                    metadata['articulo'].extend([m.strip() for m in matches if m.strip()])
                 if 'Tema:' in line:
                     match = re.search(r'Tema: (.+)', line)
                     if match:
                         metadata['tema'] = match.group(1).strip()
+        
+        metadata['es_continuacion'] = any('continuacion' in line.lower() for line in lines)
         return metadata
 
-class IntentClassifier:
-    def __init__(self):
-        self.intents = {
-            "saludo": ["hola", "buenos días", "buenas tardes", "qué tal"],
-            "despedida": ["adiós", "hasta luego", "nos vemos"],
-            "general": ["qué es", "explica", "definición"],
-            "articulo": ["artículo", "art", "art-", "1a", "1-b"]
+class ConversationManager:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True
+        )
+        self.llm = ChatOpenAI(
+            temperature=0.7,
+            model_name="gpt-3.5-turbo-0125",
+            openai_api_key=api_key
+        )
+        
+    def detect_intent(self, text: str) -> Dict:
+        intent_prompt = """
+        Analiza el siguiente mensaje y determina:
+        1. La intención principal del usuario (saludo, despedida, pregunta legal, consulta general, etc)
+        2. Si hace referencia a conversación previa
+        3. El tema principal si es una consulta
+        
+        Mensaje: {text}
+        
+        Responde en formato JSON con las siguientes keys:
+        - intent_type: tipo de intención
+        - references_history: true/false
+        - main_topic: tema principal o null
+        """
+        
+        response = self.llm.predict(intent_prompt.format(text=text))
+        try:
+            return json.loads(response)
+        except:
+            return {
+                "intent_type": "unknown",
+                "references_history": False,
+                "main_topic": None
+            }
+    
+    def get_conversational_response(self, text: str, intent: Dict) -> Optional[str]:
+        responses = {
+            "saludo": [
+                "¡Hola! Soy un asistente especializado en la Ley del IVA. ¿En qué puedo ayudarte?",
+                "¡Buen día! Estoy aquí para resolver tus dudas sobre la Ley del IVA.",
+            ],
+            "despedida": [
+                "¡Hasta luego! No dudes en volver si tienes más preguntas sobre la Ley del IVA.",
+                "¡Que tengas un excelente día! Estoy aquí para cuando necesites más información.",
+            ],
+            "agradecimiento": [
+                "¡De nada! ¿Hay algo más en lo que pueda ayudarte?",
+                "Es un placer ayudarte. ¿Tienes alguna otra consulta sobre la Ley del IVA?",
+            ]
         }
+        
+        if intent["intent_type"] in responses:
+            from random import choice
+            return choice(responses[intent["intent_type"]])
+        return None
+    
+    def add_to_history(self, question: str, answer: str):
+        self.memory.save_context(
+            {"input": question},
+            {"output": answer}
+        )
 
-    def classify(self, question: str) -> str:
-        question = question.lower()
-        for intent, keywords in self.intents.items():
-            if any(keyword in question for keyword in keywords):
-                return intent
-        return "desconocido"
+class QueryAnalyzer:
+    def __init__(self):
+        self.patterns = {
+            'articulo': [
+                r'art[íi]culo\s*[\w\.-]+',
+                r'\bart\.\s*[\w\.-]+',
+                r'\b\d+[A-Za-z]?[-\s]?[A-Za-z]?\b'
+            ],
+            'tema': [
+                r'(sobre|acerca de|respecto a)\s+.+',
+                r'(qué|como|cuando|donde)\s+.+\s+(en|para|sobre)\s+.+'
+            ]
+        }
+    
+    def analyze_query(self, question: str) -> Dict:
+        result = {
+            'tipo': 'general',
+            'articulos_mencionados': [],
+            'temas_detectados': []
+        }
+        
+        # Detectar artículos mencionados
+        for pattern in self.patterns['articulo']:
+            matches = re.finditer(pattern, question, re.IGNORECASE)
+            for match in matches:
+                result['articulos_mencionados'].append(match.group())
+        
+        if result['articulos_mencionados']:
+            result['tipo'] = 'articulo_especifico'
+            
+        return result
 
 class QASystem:
     def __init__(self, chunks_file_path: str):
         self.processor = DocumentProcessor()
-        self.classifier = IntentClassifier()
+        self.analyzer = QueryAnalyzer()
         self.knowledge_base = None
         self.chunks = []
         self.initialize_system(chunks_file_path)
@@ -94,87 +171,105 @@ class QASystem:
             logger.info("Iniciando procesamiento del archivo de texto")
             with open(chunks_file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-
-            chunks = content.split("=====")
+            
+            chunks = content.split("==================================================")
             self.chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
-
+            
             embeddings = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
                 model_kwargs={'device': 'cpu'}
             )
-            self.knowledge_base = FAISS.from_texts(self.chunks, embeddings)
+            
+            texts = self.chunks
+            metadatas = [self.processor.extract_metadata(chunk) for chunk in self.chunks]
+            self.knowledge_base = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
+            
             logger.info(f"Sistema inicializado con {len(self.chunks)} chunks")
         except Exception as e:
             logger.error(f"Error inicializando sistema: {str(e)}")
+            raise
 
     def process_question(self, question: str, api_key: str) -> Dict:
         try:
-            question_type = self.classifier.classify(question)
-
-            if question_type == "saludo":
-                return {"respuesta": "Hola, ¿en qué puedo ayudarte hoy?"}
-
-            if question_type == "despedida":
-                return {"respuesta": "Adiós, ¡que tengas un excelente día!"}
-
-            docs = self.knowledge_base.similarity_search(question, k=8)
-            context = "\n".join([doc.page_content for doc in docs])
-
+            conversation_manager = ConversationManager(api_key)
+            intent = conversation_manager.detect_intent(question)
+            
+            # Manejar respuestas conversacionales
+            if intent["intent_type"] in ["saludo", "despedida", "agradecimiento"]:
+                response = conversation_manager.get_conversational_response(question, intent)
+                return {
+                    "respuesta": response,
+                    "tipo": "conversacional",
+                    "intent": intent
+                }
+            
+            # Analizar la consulta para búsqueda específica
+            analysis = self.analyzer.analyze_query(question)
+            k_docs = 8 if analysis['tipo'] == 'articulo_especifico' else 5
+            docs = self.knowledge_base.similarity_search(question, k=k_docs)
+            
             prompt_template = """
+            Eres un experto en la Ley del Impuesto al Valor Agregado. Analiza la siguiente pregunta y el contexto proporcionado.
+            
             ESTRUCTURA DE RESPUESTA:
             1. CITA TEXTUAL:
-            - Proporciona la cita textual completa del artículo o sección relevante.
-            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema).
+            - Proporciona la cita textual completa del artículo o sección relevante
+            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema)
+            
             2. CONTEXTO LEGAL:
-            - Menciona la ubicación exacta dentro del documento (capítulo, sección, número de página).
-            - Indica si es parte de alguna reforma (si se menciona en los metadatos).
+            - Menciona la ubicación exacta dentro del documento
+            - Indica reformas relevantes si se mencionan
+            
             3. ANÁLISIS:
-            - Explica el contenido citado.
-            - Menciona referencias cruzadas a otros artículos (si aparecen en los chunks proporcionados).
-            - Proporciona ejemplos prácticos o interpretaciones legales cuando sea aplicable.
+            - Explica el contenido de forma clara y precisa
+            - Relaciona con otros artículos si es relevante
+            - Proporciona ejemplos o interpretaciones cuando sea útil
+            
+            Si la información solicitada no se encuentra en el contexto proporcionado, indícalo claramente.
+            
             Pregunta: {question}
             Contexto: {context}
-            Respuesta detallada:
             """
-
+            
             PROMPT = PromptTemplate(
                 template=prompt_template,
                 input_variables=["context", "question"]
             )
-
+            
             llm = ChatOpenAI(
                 temperature=0.3,
-                model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
+                model_name="gpt-3.5-turbo-0125",
                 openai_api_key=api_key
             )
-
-            chain = load_qa_chain(
-                llm,
-                chain_type="stuff",
-                prompt=PROMPT
-            )
-
+            
+            chain = load_qa_chain(llm, chain_type="stuff", prompt=PROMPT)
+            
             with get_openai_callback() as cb:
                 response = chain.run(input_documents=docs, question=question)
-                context_used = [
-                    {
-                        "content": doc.page_content,
-                        "metadata": self.processor.extract_metadata(doc.page_content),
-                        "tokens": self.processor.count_tokens(doc.page_content)
-                    } for doc in docs
-                ]
+                
+                conversation_manager.add_to_history(question, response)
+                
                 return {
                     "respuesta": response,
+                    "tipo": "legal",
+                    "intent": intent,
                     "metricas": {
                         "tokens_totales": cb.total_tokens,
                         "costo_estimado": cb.total_cost,
                         "chunks_relevantes": len(docs)
-                    },
-                    "contexto_usado": context_used
+                    }
                 }
+                
         except Exception as e:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
+
+# Configuración de Flask
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+Session(app)
 
 # Inicialización del sistema
 qa_system = None
@@ -207,7 +302,10 @@ def process_query():
 
 @app.route('/status', methods=['GET'])
 def health_check():
-    return jsonify({"status": "OK"}), 200
+    return jsonify({
+        "status": "OK",
+        "timestamp": datetime.now().isoformat()
+    }), 200
 
 if __name__ == "__main__":
     init_qa_system()
