@@ -70,7 +70,7 @@ class ConversationManager:
         )
         self.llm = ChatOpenAI(
             temperature=0.7,
-            model_name="gpt-3.5-turbo-0125",
+            model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
             openai_api_key=api_key
         )
         
