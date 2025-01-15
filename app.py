@@ -102,16 +102,16 @@ class ConversationManager:
     def get_conversational_response(self, text: str, intent: Dict) -> Optional[str]:
         responses = {
             "saludo": [
-                "¡Hola! Soy un asistente especializado en la Ley del IVA. ¿En qué puedo ayudarte?",
-                "¡Buen día! Estoy aquí para resolver tus dudas sobre la Ley del IVA.",
+                "¡Hola! Soy un asistente especializado en la LEY DEL IMPUESTO AL VALOR AGREGADO. ¿En qué puedo ayudarte?",
+                "¡Buen día! Estoy aquí para resolver tus dudas sobre la LEY DEL IMPUESTO AL VALOR AGREGADO",
             ],
             "despedida": [
-                "¡Hasta luego! No dudes en volver si tienes más preguntas sobre la Ley del IVA.",
+                "¡Hasta luego! No dudes en volver si tienes más preguntas sobre la LEY DEL IMPUESTO AL VALOR AGREGADO.",
                 "¡Que tengas un excelente día! Estoy aquí para cuando necesites más información.",
             ],
             "agradecimiento": [
                 "¡De nada! ¿Hay algo más en lo que pueda ayudarte?",
-                "Es un placer ayudarte. ¿Tienes alguna otra consulta sobre la Ley del IVA?",
+                "Es un placer ayudarte. ¿Tienes alguna otra consulta sobre la LEY DEL IMPUESTO AL VALOR AGREGADO?",
             ]
         }
 
