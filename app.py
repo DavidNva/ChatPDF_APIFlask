@@ -229,7 +229,7 @@ class QASystem:
             - Menciona la ubicación exacta dentro del documento
             - Indica reformas relevantes si se mencionan
             
-            3. ANÁLISIS:
+            3. ANALISIS:
             - Explica el contenido de forma clara y precisa
             - Relaciona con otros artículos si es relevante
             - Proporciona ejemplos o interpretaciones cuando sea útil
