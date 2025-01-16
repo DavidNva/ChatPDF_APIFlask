@@ -62,12 +62,9 @@ class DocumentProcessor:
         return metadata
 
 class ConversationManager:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, memory: ConversationBufferMemory):
         self.api_key = api_key
-        self.memory = ConversationBufferMemory(
-            memory_key="chat_history",
-            return_messages=True
-        )
+        self.memory = memory
         self.llm = ChatOpenAI(
             temperature=0.7,
             model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
@@ -136,7 +133,7 @@ class QueryAnalyzer:
             ],
             'tema': [
                 r'(sobre|acerca de|respecto a)\s+.+',
-                r'(qué|como|cuando|donde)\s+.+\s+(en|para|sobre)\s+.+'
+                r'(qué|como|cuando|donde)\s+.+\s+(en|para|sobre)\s+.+'  
             ]
         }
 
@@ -156,6 +153,7 @@ class QueryAnalyzer:
             result['tipo'] = 'articulo_especifico'
 
         return result
+
 class QASystem:
     def __init__(self, chunks_file_path: str):
         self.processor = DocumentProcessor()
@@ -187,15 +185,20 @@ class QASystem:
             logger.error(f"Error inicializando sistema: {str(e)}")
             raise
 
-    def process_question(self, question: str, api_key: str) -> Dict:
+    def process_question(self, question: str, api_key: str, historial: Optional[str] = "") -> Dict:
         try:
-            conversation_manager = ConversationManager(api_key)
+            conversation_manager = ConversationManager(api_key, ConversationBufferMemory(memory_key="chat_history", return_messages=True))
+
+            # Si hay historial, lo añadimos al contexto de la conversación
+            if historial:
+                conversation_manager.memory.load_context({"input": historial}, {})
+
             intent = conversation_manager.detect_intent(question)
 
             # Manejar respuestas conversacionales
             if intent["intent_type"] in ["saludo", "despedida", "agradecimiento"]:
                 response = conversation_manager.get_conversational_response(question, intent)
-
+                
                 # Crear métricas y contexto vacío para mantener consistencia
                 metrics = {
                     "tokens_totales": 0,
@@ -277,6 +280,8 @@ class QASystem:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
 
+# Continuación de la API (segundo fragmento)
+
 # Configuración de Flask
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
@@ -303,11 +308,12 @@ def process_query():
         data = request.get_json()
         question = data.get("pregunta")
         api_key = data.get("api_key")
+        historial = data.get("historial", "")
 
         if not question or not api_key:
             return jsonify({"error": "Faltan datos requeridos."}), 400
 
-        response = qa_system.process_question(question, api_key)
+        response = qa_system.process_question(question, api_key, historial)
         return jsonify(response), 200
     except Exception as e:
         logger.error(f"Error en /consulta: {str(e)}")
