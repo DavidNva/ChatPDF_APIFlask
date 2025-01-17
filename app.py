@@ -222,7 +222,8 @@ class QASystem:
                     "tipo": "conversacional",
                     "intent": intent,
                     "metricas": metrics,
-                    "contexto_usado": context_used
+                    "contexto_usado": context_used,
+                    "historial": historial
                 }
 
             # Analizar la consulta para búsqueda específica
@@ -248,7 +249,8 @@ class QASystem:
                     "costo_estimado": 0.0,
                     "chunks_relevantes": len(docs)
                 },
-                "contexto_usado": [{"content": doc.page_content} for doc in docs]
+                "contexto_usado": [{"content": doc.page_content} for doc in docs],
+                "historial": historial
             }
 
         except Exception as e:
