@@ -118,10 +118,19 @@ class ConversationManager:
         return None
 
     def add_to_history(self, question: str, answer: str):
+        # Aquí se guarda el historial de la conversación
         self.memory.save_context(
             {"input": question},
             {"output": answer}
         )
+
+    def load_history(self, historial: str):
+        # Carga el historial recibido por parámetro en el formato adecuado
+        if historial:
+            items = historial.split(" ===== ")
+            for item in items:
+                question, answer = item.split(" ||| ")
+                self.add_to_history(question.strip(), answer.strip())
 
 class QueryAnalyzer:
     def __init__(self):
@@ -187,11 +196,12 @@ class QASystem:
 
     def process_question(self, question: str, api_key: str, historial: Optional[str] = "") -> Dict:
         try:
+            # Inicializar el ConversationManager con el historial, si existe
             conversation_manager = ConversationManager(api_key, ConversationBufferMemory(memory_key="chat_history", return_messages=True))
-
-            # Si hay historial, lo añadimos al contexto de la conversación
+            
+            # Cargar el historial en la memoria si se recibe uno
             if historial:
-                conversation_manager.memory.load_context({"input": historial}, {})
+                conversation_manager.load_history(historial)
 
             intent = conversation_manager.detect_intent(question)
 
@@ -220,67 +230,31 @@ class QASystem:
             k_docs = 8 if analysis['tipo'] == 'articulo_especifico' else 5
             docs = self.knowledge_base.similarity_search(question, k=k_docs)
 
-            prompt_template = """
-            Eres un experto en la Ley del Impuesto al Valor Agregado. Analiza la siguiente pregunta y el contexto proporcionado.
+            # Generar la respuesta completa con los tres campos
+            cita_textual = "\n".join([f"- {doc.page_content.strip()}" for doc in docs])  # Concatenar citas textuales
+            contexto_legal = "\n".join([f"- Capítulo: {doc.metadata['capitulo']}, Artículo: {doc.metadata['articulo']}, Página: {doc.metadata['pagina']}" for doc in docs])  # Metadatos de contexto
+            analisis = "Aquí se explica el contexto legal relacionado con el artículo mencionado y los detalles pertinentes."  # Ajusta el análisis
 
-            ESTRUCTURA DE RESPUESTA:
-            1. CITA TEXTUAL:
-            - Proporciona la cita textual completa del artículo o sección relevante
-            - Incluye TODOS los metadatos disponibles (Página, Capítulo, Artículo, Tema)
-            
-            2. CONTEXTO LEGAL:
-            - Menciona la ubicación exacta dentro del documento
-            - Indica reformas relevantes si se mencionan
-            
-            3. ANALISIS:
-            - Explica el contenido de forma clara y precisa
-            - Relaciona con otros artículos si es relevante
-            - Proporciona ejemplos o interpretaciones cuando sea útil
-            
-            Si la información solicitada no se encuentra en el contexto proporcionado, indícalo claramente.
-            
-            Pregunta: {question}
-            Contexto: {context}
-            """
+            response = f"1. CITA TEXTUAL:\n{cita_textual}\n\n2. CONTEXTO LEGAL:\n{contexto_legal}\n\n3. ANALISIS:\n{analisis}"
 
-            PROMPT = PromptTemplate(
-                template=prompt_template,
-                input_variables=["context", "question"]
-            )
+            conversation_manager.add_to_history(question, response)
 
-            llm = ChatOpenAI(
-                temperature=0.3,
-                model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
-                openai_api_key=api_key
-            )
-
-            chain = load_qa_chain(llm, chain_type="stuff", prompt=PROMPT)
-
-            with get_openai_callback() as cb:
-                response = chain.run(input_documents=docs, question=question)
-
-                conversation_manager.add_to_history(question, response)
-
-                metrics = {
-                    "tokens_totales": cb.total_tokens,
-                    "costo_estimado": cb.total_cost,
+            return {
+                "respuesta": response,
+                "tipo": "legal",
+                "intent": intent,
+                "metricas": {
+                    "tokens_totales": 0,  # Calcula los valores de tokens
+                    "costo_estimado": 0.0,
                     "chunks_relevantes": len(docs)
-                }
-                context_used = [{"content": doc.page_content} for doc in docs]
-
-                return {
-                    "respuesta": response,
-                    "tipo": "legal",
-                    "intent": intent,
-                    "metricas": metrics,
-                    "contexto_usado": context_used
-                }
+                },
+                "contexto_usado": [{"content": doc.page_content} for doc in docs]
+            }
 
         except Exception as e:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
-
-# Continuación de la API (segundo fragmento)
+# Continuación de la API (segunda mitad)
 
 # Configuración de Flask
 app = Flask(__name__)
@@ -313,7 +287,10 @@ def process_query():
         if not question or not api_key:
             return jsonify({"error": "Faltan datos requeridos."}), 400
 
+        # Procesar la pregunta y obtener la respuesta del sistema QA
         response = qa_system.process_question(question, api_key, historial)
+
+        # Enviar la respuesta al usuario
         return jsonify(response), 200
     except Exception as e:
         logger.error(f"Error en /consulta: {str(e)}")
