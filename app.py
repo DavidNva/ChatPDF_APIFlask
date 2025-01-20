@@ -154,7 +154,7 @@ class ConversationManager:
 
         intent_prompt = f"""
         Analiza el siguiente mensaje y su contexto histórico para determinar:
-        1. La intención principal del usuario
+        1. La intención principal del usuario (saludo,agradecimiento, despedida, pregunta legal, consulta general, etc)
         2. Si hace referencia a conversación previa
         3. El tema principal
         4. Artículos mencionados
