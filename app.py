@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 import os
 import logging
 import sys
@@ -12,10 +12,12 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional
 from langchain.callbacks import get_openai_callback
+from collections import defaultdict
 from flask_session import Session
 
+# Configuración del logging
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.INFO,
@@ -26,6 +28,8 @@ logger = logging.getLogger(__name__)
 class DocumentProcessor:
     def __init__(self):
         self.encoding = tiktoken.encoding_for_model("gpt-3.5-turbo-0125")
+        self.chunk_relations = defaultdict(list)
+        self.article_index = defaultdict(list)
 
     def count_tokens(self, text: str) -> int:
         return len(self.encoding.encode(text))
@@ -36,7 +40,9 @@ class DocumentProcessor:
             'capitulo': None,
             'articulo': [],
             'tema': None,
-            'es_continuacion': False
+            'es_continuacion': False,
+            'chunk_id': None,
+            'relacionados': []
         }
 
         lines = chunk.split('\n')
@@ -58,44 +64,129 @@ class DocumentProcessor:
                     if match:
                         metadata['tema'] = match.group(1).strip()
 
+        content_start = chunk.find('CONTENIDO:')
+        if content_start != -1:
+            content = chunk[content_start:]
+            article_refs = re.finditer(r'[Aa]rtículo[s]?\s+(\d+[A-Za-z]?(?:-[A-Z])?)', content)
+            metadata['relacionados'].extend(match.group(1) for match in article_refs)
+
         metadata['es_continuacion'] = any('continuacion' in line.lower() for line in lines)
         return metadata
 
+    def build_relations(self, chunks: List[str]):
+        """
+        Construye relaciones entre chunks basados en artículos y otros metadatos.
+        """
+        for i, chunk in enumerate(chunks):
+            metadata = self.extract_metadata(chunk)
+            chunk_id = f"chunk_{i}"
+            metadata['chunk_id'] = chunk_id
+            
+            # Indexar artículos en el chunk
+            for articulo in metadata['articulo']:
+                self.article_index[articulo].append(chunk_id)
+            
+            # Construir relaciones basadas en artículos relacionados
+            for relacionado in metadata['relacionados']:
+                self.chunk_relations[chunk_id].append(relacionado)
+
 class ConversationManager:
-    def __init__(self, api_key: str, memory: ConversationBufferMemory):
+    def __init__(self, api_key: str):
         self.api_key = api_key
-        self.memory = memory
         self.llm = ChatOpenAI(
             temperature=0.7,
             model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
             openai_api_key=api_key
         )
+        self.memory = ConversationBufferMemory(return_messages=True)
+        self.conversation_state = {
+            "last_articles": [],
+            "last_topics": [],
+            "context": []
+        }
 
-    def detect_intent(self, text: str) -> Dict:
-        intent_prompt = """
-        Analiza el siguiente mensaje y determina:
-        1. La intención principal del usuario (saludo, despedida, pregunta legal, consulta general, etc)
+    def process_history(self, history: List[Dict]) -> Dict:
+        """Procesa el historial para extraer información relevante"""
+        processed_history = {
+            "articles_mentioned": set(),
+            "topics_discussed": set(),
+            "last_contexts": [],
+            "summary": ""
+        }
+        
+        if not history:
+            return processed_history
+            
+        for interaction in history:
+            if "articulos_mencionados" in interaction:
+                processed_history["articles_mentioned"].update(interaction["articulos_mencionados"])
+            if "tema" in interaction:
+                processed_history["topics_discussed"].add(interaction["tema"])
+            if "contexto" in interaction:
+                processed_history["last_contexts"].append(interaction["contexto"])
+        
+        try:
+            # Generar resumen del historial
+            history_context = "\n".join([f"Pregunta previa: {h.get('pregunta', '')}\nRespuesta: {h.get('respuesta', '')}\n" for h in history[-3:]])
+            
+            summary_prompt = f"""
+            Resume brevemente el contexto de la siguiente conversación, 
+            enfocándote en los temas principales y artículos discutidos:
+            {history_context}
+            """
+            
+            processed_history["summary"] = self.llm.predict(summary_prompt)
+        except Exception as e:
+            logger.error(f"Error generando resumen del historial: {str(e)}")
+            processed_history["summary"] = "Error procesando el resumen del historial"
+        
+        return processed_history
+
+    def detect_intent(self, text: str, history: List[Dict] = None) -> Dict:
+        history_context = ""
+        if history:
+            try:
+                processed_history = self.process_history(history)
+                history_context = f"\nContexto del historial: {processed_history['summary']}"
+            except Exception as e:
+                logger.error(f"Error procesando historial en detect_intent: {str(e)}")
+                history_context = ""
+
+        intent_prompt = f"""
+        Analiza el siguiente mensaje y su contexto histórico para determinar:
+        1. La intención principal del usuario
         2. Si hace referencia a conversación previa
-        3. El tema principal si es una consulta
+        3. El tema principal
+        4. Artículos mencionados
+        5. Si requiere información de múltiples artículos
 
         Mensaje: {text}
+        {history_context}
 
-        Responde en formato JSON con las siguientes keys:
+        Responde en formato JSON con:
         - intent_type: tipo de intención
         - references_history: true/false
         - main_topic: tema principal o null
+        - mentioned_articles: []
+        - requires_multiple_sources: true/false
+        - is_followup: true/false
         """
 
-        response = self.llm.predict(intent_prompt.format(text=text))
         try:
-            return json.loads(response)
-        except:
+            response = self.llm.predict(intent_prompt)
+            intent_data = json.loads(response)
+            return intent_data
+        except Exception as e:
+            logger.error(f"Error al procesar la intención: {str(e)}")
             return {
                 "intent_type": "unknown",
                 "references_history": False,
-                "main_topic": None
+                "main_topic": None,
+                "mentioned_articles": [],
+                "requires_multiple_sources": False,
+                "is_followup": False
             }
-
+    
     def get_conversational_response(self, text: str, intent: Dict) -> Optional[str]:
         responses = {
             "saludo": [
@@ -118,19 +209,18 @@ class ConversationManager:
         return None
 
     def add_to_history(self, question: str, answer: str):
-        # Aquí se guarda el historial de la conversación
         self.memory.save_context(
             {"input": question},
             {"output": answer}
         )
 
-    def load_history(self, historial: str):
-        # Carga el historial recibido por parámetro en el formato adecuado
+    def load_history(self, historial: List[Dict]):
         if historial:
-            items = historial.split(" ===== ")
-            for item in items:
-                question, answer = item.split(" ||| ")
-                self.add_to_history(question.strip(), answer.strip())
+            for interaction in historial:
+                question = interaction.get('pregunta', '')
+                answer = interaction.get('respuesta', '')
+                if question and answer:
+                    self.add_to_history(question, answer)
 
 class QueryAnalyzer:
     def __init__(self):
@@ -143,22 +233,46 @@ class QueryAnalyzer:
             'tema': [
                 r'(sobre|acerca de|respecto a)\s+.+',
                 r'(qué|como|cuando|donde)\s+.+\s+(en|para|sobre)\s+.+'  
+            ],
+            'definicion': [
+                r'(qué|que)\s+(es|son|significa)\s+.+',
+                r'(define|definición de|concepto de)\s+.+'  
+            ],
+            'listado': [
+                r'(cuáles|cuales|que|qué)\s+(son|están)\s+.+(exentos|obligados|sujetos)',
+                r'(enumera|lista|menciona)\s+.+'  
             ]
         }
 
-    def analyze_query(self, question: str) -> Dict:
+    def analyze_query(self, question: str, history: List[Dict] = None) -> Dict:
         result = {
             'tipo': 'general',
             'articulos_mencionados': [],
-            'temas_detectados': []
+            'temas_detectados': [],
+            'tipo_consulta': None,
+            'requiere_multiple_fuentes': False,
+            'referencias_historicas': []
         }
 
+        # Detectar artículos mencionados
         for pattern in self.patterns['articulo']:
             matches = re.finditer(pattern, question, re.IGNORECASE)
             for match in matches:
                 result['articulos_mencionados'].append(match.group())
 
+        # Detectar el tipo de consulta
+        for pattern in self.patterns['definicion']:
+            if re.search(pattern, question, re.IGNORECASE):
+                result['tipo_consulta'] = 'DEFINICION'
+                result['requiere_multiple_fuentes'] = True
+
+        for pattern in self.patterns['listado']:
+            if re.search(pattern, question, re.IGNORECASE):
+                result['tipo_consulta'] = 'LISTADO'
+                result['requiere_multiple_fuentes'] = True
+
         if result['articulos_mencionados']:
+            result['tipo_consulta'] = 'ARTICULO_ESPECIFICO'
             result['tipo'] = 'articulo_especifico'
 
         return result
@@ -169,16 +283,25 @@ class QASystem:
         self.analyzer = QueryAnalyzer()
         self.knowledge_base = None
         self.chunks = []
+        self.chunk_metadata = {}
+        self.cache = {}
+        self.cache_ttl = timedelta(hours=1)  # Tiempo de vida del caché
+        self.cache_timestamps = {}  # Para controlar la expiración del caché
         self.initialize_system(chunks_file_path)
 
     def initialize_system(self, chunks_file_path: str):
         try:
-            logger.info("Iniciando procesamiento del archivo de texto")
             with open(chunks_file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
 
             chunks = content.split("==================================================")
             self.chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
+            
+            self.processor.build_relations(self.chunks)
+            
+            for i, chunk in enumerate(self.chunks):
+                metadata = self.processor.extract_metadata(chunk)
+                self.chunk_metadata[f"chunk_{i}"] = metadata
 
             embeddings = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
@@ -186,77 +309,148 @@ class QASystem:
             )
 
             texts = self.chunks
-            metadatas = [self.processor.extract_metadata(chunk) for chunk in self.chunks]
+            metadatas = [self.chunk_metadata[f"chunk_{i}"] for i in range(len(self.chunks))]
             self.knowledge_base = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
-
+            
             logger.info(f"Sistema inicializado con {len(self.chunks)} chunks")
         except Exception as e:
             logger.error(f"Error inicializando sistema: {str(e)}")
             raise
 
-    def process_question(self, question: str, api_key: str, historial: Optional[str] = "") -> Dict:
+    def get_related_chunks(self, initial_docs: List, analysis: Dict) -> List:
+        """Obtiene chunks relacionados basados en el análisis y los documentos iniciales"""
+        from langchain.schema import Document
+        all_docs = list(initial_docs)
+        seen_chunks = set()
+
+        for doc in initial_docs:
+            chunk_id = doc.metadata.get('chunk_id')
+            if chunk_id and chunk_id not in seen_chunks:
+                seen_chunks.add(chunk_id)
+                
+                # Obtener chunks relacionados
+                related_articles = self.processor.chunk_relations[chunk_id]
+                for article in related_articles:
+                    related_chunks = self.processor.article_index.get(article, [])
+                    for related_chunk_id in related_chunks:
+                        if related_chunk_id not in seen_chunks:
+                            seen_chunks.add(related_chunk_id)
+                            chunk_index = int(related_chunk_id.split('_')[1])
+                            if chunk_index < len(self.chunks):  # Verificar índice válido
+                                chunk_content = self.chunks[chunk_index]
+                                metadata = self.chunk_metadata[related_chunk_id]
+                                all_docs.append(Document(page_content=chunk_content, metadata=metadata))
+
+        return all_docs[:10]  # Limitar a 10 documentos para evitar sobrecarga
+
+    def check_cache(self, cache_key: str) -> Optional[Dict]:
+        """Verifica si hay una respuesta en caché válida"""
+        if cache_key in self.cache:
+            timestamp = self.cache_timestamps.get(cache_key)
+            if timestamp and datetime.now() - timestamp < self.cache_ttl:
+                return self.cache[cache_key]
+            else:
+                # Limpiar caché expirado
+                del self.cache[cache_key]
+                del self.cache_timestamps[cache_key]
+        return None
+
+    def update_cache(self, cache_key: str, result: Dict):
+        """Actualiza el caché con una nueva respuesta"""
+        self.cache[cache_key] = result
+        self.cache_timestamps[cache_key] = datetime.now()
+
+    def process_question(self, question: str, api_key: str, history: List[Dict] = None) -> Dict:
         try:
-            # Inicializar el ConversationManager con el historial, si existe
-            conversation_manager = ConversationManager(api_key, ConversationBufferMemory(memory_key="chat_history", return_messages=True))
+            conversation_manager = ConversationManager(api_key)
+            intent = conversation_manager.detect_intent(question, history)
             
-            # Cargar el historial en la memoria si se recibe uno
-            if historial:
-                conversation_manager.load_history(historial)
+            cache_key = f"{question}_{intent['intent_type']}"
+            cached_response = self.check_cache(cache_key)
+            if cached_response:
+                return cached_response
 
-            intent = conversation_manager.detect_intent(question)
-
-            # Manejar respuestas conversacionales
             if intent["intent_type"] in ["saludo", "despedida", "agradecimiento"]:
                 response = conversation_manager.get_conversational_response(question, intent)
-                
-                # Crear métricas y contexto vacío para mantener consistencia
-                metrics = {
-                    "tokens_totales": 0,
-                    "costo_estimado": 0.0,
-                    "chunks_relevantes": 0
-                }
-                context_used = []
-
-                return {
+                result = {
                     "respuesta": response,
                     "tipo": "conversacional",
                     "intent": intent,
-                    "metricas": metrics,
+                    "metricas": {
+                        "tokens_totales": 0,
+                        "costo_estimado": 0.0,
+                        "chunks_relevantes": 0
+                    },
+                    "contexto_usado": []
+                }
+                self.update_cache(cache_key, result)
+                return result
+
+            analysis = self.analyzer.analyze_query(question, history)
+            k_docs = 8 if analysis['requiere_multiple_fuentes'] else 5
+            initial_docs = self.knowledge_base.similarity_search(question, k=k_docs)
+            all_docs = self.get_related_chunks(initial_docs, analysis)
+
+            prompt_template = f"""
+            Eres un experto en la Ley del Impuesto al Valor Agregado. 
+            Analiza la siguiente pregunta y el contexto proporcionado.
+            
+            Pregunta: {{question}}
+            
+            Contexto: {{context}}
+            
+            Estructura tu respuesta de la siguiente manera:
+            
+            1. CITA TEXTUAL:
+            - Proporciona una respuesta clara y concisa
+            - Cita los artículos específicos cuando sea relevante
+            
+            2. ANALISIS
+            - Explica el contexto y las implicaciones
+            - Menciona cualquier excepción o caso especial
+            
+            3. CONTEXTO LEGAL:
+            - Lista los artículos y secciones citadas
+            - Menciona reformas relevantes si las hay
+            """
+
+            PROMPT = PromptTemplate(
+                template=prompt_template,
+                input_variables=["context", "question"]
+            )
+
+            llm = ChatOpenAI(
+                temperature=0.3,
+                model_name="ft:gpt-3.5-turbo-0125:personal:iva-finetuned-pdf-128:Aph45p7l",
+                openai_api_key=api_key
+            )
+
+            chain = load_qa_chain(llm, chain_type="stuff", prompt=PROMPT)
+
+            with get_openai_callback() as cb:
+                response = chain.run(input_documents=all_docs, question=question)
+
+                context_used = [{"content": doc.page_content, "metadata": doc.metadata} for doc in all_docs]
+
+                result = {
+                    "respuesta": response,
+                    "tipo": "legal",
+                    "intent": intent,
+                    "metricas": {
+                        "tokens_totales": cb.total_tokens,
+                        "costo_estimado": cb.total_cost,
+                        "chunks_relevantes": len(all_docs)
+                    },
                     "contexto_usado": context_used,
-                    "historial": historial
+                    "historial_procesado": history if history else []
                 }
 
-            # Analizar la consulta para búsqueda específica
-            analysis = self.analyzer.analyze_query(question)
-            k_docs = 8 if analysis['tipo'] == 'articulo_especifico' else 5
-            docs = self.knowledge_base.similarity_search(question, k=k_docs)
-
-            # Generar la respuesta completa con los tres campos
-            cita_textual = "\n".join([f"- {doc.page_content.strip()}" for doc in docs])  # Concatenar citas textuales
-            contexto_legal = "\n".join([f"- Capítulo: {doc.metadata['capitulo']}, Artículo: {doc.metadata['articulo']}, Página: {doc.metadata['pagina']}" for doc in docs])  # Metadatos de contexto
-            analisis = "Aquí se explica el contexto legal relacionado con el artículo mencionado y los detalles pertinentes."  # Ajusta el análisis
-
-            response = f"1. CITA TEXTUAL:\n{cita_textual}\n\n2. CONTEXTO LEGAL:\n{contexto_legal}\n\n3. ANALISIS:\n{analisis}"
-
-            conversation_manager.add_to_history(question, response)
-
-            return {
-                "respuesta": response,
-                "tipo": "legal",
-                "intent": intent,
-                "metricas": {
-                    "tokens_totales": 0,  # Calcula los valores de tokens
-                    "costo_estimado": 0.0,
-                    "chunks_relevantes": len(docs)
-                },
-                "contexto_usado": [{"content": doc.page_content} for doc in docs],
-                "historial": historial
-            }
+                self.update_cache(cache_key, result)
+                return result
 
         except Exception as e:
             logger.error(f"Error procesando pregunta: {str(e)}")
             return {"error": str(e), "tipo": "error"}
-# Continuación de la API (segunda mitad)
 
 # Configuración de Flask
 app = Flask(__name__)
@@ -270,39 +464,51 @@ qa_system = None
 
 def init_qa_system():
     global qa_system
-    qa_system = QASystem('data/chunks_d.txt')
+    if qa_system is None:
+        try:
+            qa_system = QASystem('data/chunks_d.txt')
+            logger.info("Sistema QA inicializado correctamente")
+        except Exception as e:
+            logger.error(f"Error al inicializar el sistema QA: {str(e)}")
+            raise
 
 @app.before_request
 def ensure_qa_system():
-    global qa_system
-    if qa_system is None:
+    if not qa_system:
         init_qa_system()
 
 @app.route('/consulta', methods=['POST'])
 def process_query():
     try:
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
+
         question = data.get("pregunta")
         api_key = data.get("api_key")
-        historial = data.get("historial", "")
+        historial = data.get("historial", [])  # Ahora esperamos una lista de diccionarios
 
         if not question or not api_key:
-            return jsonify({"error": "Faltan datos requeridos."}), 400
+            return jsonify({"error": "Faltan datos requeridos (pregunta o api_key)"}), 400
 
-        # Procesar la pregunta y obtener la respuesta del sistema QA
+        # Validar formato de API key
+        # if not re.match(r'^sk-[a-zA-Z0-9]{48}$', api_key):
+        #     return jsonify({"error": "Formato de API key inválido"}), 400
+
         response = qa_system.process_question(question, api_key, historial)
-
-        # Enviar la respuesta al usuario
         return jsonify(response), 200
+
     except Exception as e:
         logger.error(f"Error en /consulta: {str(e)}")
-        return jsonify({"error": "Error interno"}), 500
+        return jsonify({"error": f"Error interno: {str(e)}"}), 500
 
 @app.route('/status', methods=['GET'])
 def health_check():
     return jsonify({
         "status": "OK",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0",
+        "sistema_inicializado": qa_system is not None
     }), 200
 
 if __name__ == "__main__":
