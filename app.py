@@ -427,8 +427,13 @@ class QASystem:
 
             chain = load_qa_chain(llm, chain_type="stuff", prompt=PROMPT)
 
+            
             with get_openai_callback() as cb:
                 response = chain.run(input_documents=all_docs, question=question)
+                # Calcular el costo manualmente
+                precio_prompt = 0.012 / 1000  # Precio por token de entrada
+                precio_completions = 0.016 / 1000  # Precio por token de salidas
+                costo_estimado = (cb.prompt_tokens * precio_prompt) + (cb.completion_tokens * precio_completions)
 
                 context_used = [{"content": doc.page_content, "metadata": doc.metadata} for doc in all_docs]
 
@@ -438,7 +443,8 @@ class QASystem:
                     "intent": intent,
                     "metricas": {
                         "tokens_totales": cb.total_tokens,
-                        "costo_estimado": cb.total_cost,
+                        #"costo_estimado": cb.total_cost,
+                        "costo_estimado": costo_estimado,
                         "chunks_relevantes": len(all_docs)
                     },
                     "contexto_usado": context_used,
