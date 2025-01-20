@@ -477,10 +477,38 @@ def ensure_qa_system():
     if not qa_system:
         init_qa_system()
 
+def transform_historial_to_json(plain_text_historial):
+    try:
+        # Manejar casos de historial vacío
+        if not plain_text_historial.strip():
+            return []
+
+        # Dividir interacciones por el separador "====="
+        interactions = plain_text_historial.split("=====")
+
+        # Crear una lista para almacenar preguntas y respuestas
+        conversation_list = []
+        for interaction in interactions:
+            parts = interaction.split("|||")  # Dividir pregunta y respuesta
+            if len(parts) == 2:  # Validar que haya exactamente una pregunta y una respuesta
+                conversation_list.append({
+                    "pregunta": parts[0].strip(),  # Limpiar espacios
+                    "respuesta": parts[1].strip()  # Limpiar espacios
+                })
+
+        if not conversation_list:  # Verificar que no esté vacío después de procesar
+            raise ValueError("El historial está vacío o tiene un formato incorrecto.")
+
+        return conversation_list
+    except Exception as e:
+        raise ValueError(f"Error al transformar historial: {str(e)}")
+
 @app.route('/consulta', methods=['POST'])
 def process_query():
     try:
         data = request.get_json()
+        print("Historial recibido:", data.get("historial"))  # Asegúrate de que esto sea una lista o un JSON bien estructurado
+
         if not data:
             return jsonify({"error": "No se recibieron datos"}), 400
 
@@ -491,9 +519,14 @@ def process_query():
         if not question or not api_key:
             return jsonify({"error": "Faltan datos requeridos (pregunta o api_key)"}), 400
 
-        # Validar formato de API key
-        # if not re.match(r'^sk-[a-zA-Z0-9]{48}$', api_key):
-        #     return jsonify({"error": "Formato de API key inválido"}), 400
+        # Validar y transformar historial si no está en formato JSON
+        if isinstance(historial, str) and historial.strip():  # Si llega como texto plano no vacío
+            try:
+                historial = transform_historial_to_json(historial)  # Transformar a JSON
+            except Exception as e:
+                return jsonify({"error": f"Historial inválido: {str(e)}"}), 400
+        elif not isinstance(historial, list):  # Si no es lista, asumir vacío
+            historial = []  # Usar historial vacío por defecto
 
         response = qa_system.process_question(question, api_key, historial)
         return jsonify(response), 200
